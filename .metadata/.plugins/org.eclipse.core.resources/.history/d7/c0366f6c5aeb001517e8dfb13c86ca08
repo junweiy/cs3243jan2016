@@ -201,32 +201,16 @@ public class State {
 		return completeLines;
 	}
 	
-	public void fillNonHoles(int[][] holes, int row, int column) {
-		if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
-				|| holes[row][column] != 0) {
-			return;
-		} 
-		holes[row][column] = 1;
-		fillNonHoles(holes, row + 1, column);
-		fillNonHoles(holes, row - 1, column);
-		fillNonHoles(holes, row, column + 1);
-		fillNonHoles(holes, row, column - 1);
-	}
-	
 	//This function calculates the number of holes in the field
 	public int getNumberOfHoles() {
 		int holes = 0;
-		
-		int [][] filledArray = new int[ROWS][COLS];
-		for (int i = 0; i < COLS; i++) {
-			fillNonHoles(filledArray, ROWS - 1, i);
-		}
-		
-		for (int row = 0; row < ROWS; row++) {
-			for (int column = 0; column < COLS; column++) {
-				if (filledArray[row][column] == 0 && field[row][column] == 0) {
+		for (int row = 1; row < ROWS - 1; row++) {
+			for (int column = 1; column < COLS - 1; column++) {
+				if (field[row][column] == 0 && field[row+1][column] != 0 && field[row][column+1] != 0 && 
+						field[row-1][column] != 0 && field[row][column-1] != 0) {
 					holes++;
 				}
+					
 			}
 		}
 		return holes;
