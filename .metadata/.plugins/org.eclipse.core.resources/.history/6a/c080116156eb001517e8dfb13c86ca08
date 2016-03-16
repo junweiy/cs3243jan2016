@@ -157,9 +157,7 @@ public class State {
 			while (row >= 0 && field[row][column] == 0) {
 				row--;
 			}
-			if (row != -1) {
-				aggregateHeight += row + 1;
-			}
+			aggregateHeight += row;
 		}
 		return aggregateHeight;
 	}

@@ -5,7 +5,6 @@ public class PlayerSkeleton {
 		
 		return 0;
 	}
-
 	
 	public static void main(String[] args) {
 		State s = new State();
@@ -15,8 +14,6 @@ public class PlayerSkeleton {
 			s.makeMove(p.pickMove(s,s.legalMoves()));
 			s.draw();
 			s.drawNext(0,0);
-			System.out.println("ah: " + s.getAggregateHeights() + " b: " + s.getBumpiness() + " h: " + s.getNumberOfHoles() + " cl: "
-					+ s.getNumberOfCompleteLines());
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {

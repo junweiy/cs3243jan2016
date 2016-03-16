@@ -153,13 +153,11 @@ public class State {
 	public int getAggregateHeights() {
 		int aggregateHeight = 0;
 		for (int column = 0; column < COLS; column++) {
-			int row = ROWS - 1;
-			while (row >= 0 && field[row][column] == 0) {
-				row--;
+			int row = 0;
+			while (row < ROWS && field[row][column] != 0) {
+				row++;
 			}
-			if (row != -1) {
-				aggregateHeight += row + 1;
-			}
+			aggregateHeight += row;
 		}
 		return aggregateHeight;
 	}
