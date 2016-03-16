@@ -149,7 +149,6 @@ public class State {
 		return turn;
 	}
 	
-	//This function returns the heights of all columns as an array
 	public int[] getHeights() {
 		int[] heights = new int[COLS];
 		for (int column = 0; column < COLS; column++) {

@@ -149,36 +149,32 @@ public class State {
 		return turn;
 	}
 	
-	//This function returns the heights of all columns as an array
-	public int[] getHeights() {
-		int[] heights = new int[COLS];
+	//This function gets the aggregate heights of each column
+	public int getAggregateHeights() {
+		int aggregateHeight = 0;
 		for (int column = 0; column < COLS; column++) {
 			int row = ROWS - 1;
 			while (row >= 0 && field[row][column] == 0) {
 				row--;
 			}
 			if (row != -1) {
-				heights[column] = row + 1;
-			} else {
-				heights[column] = 0;
+				aggregateHeight += row + 1;
 			}
-		}
-		return heights;
-	}
-	
-	//This function gets the aggregate heights of each column
-	public int getAggregateHeights() {
-		int[] heights = getHeights();
-		int aggregateHeight = 0;
-		for (int height : heights) {
-			aggregateHeight += height;
 		}
 		return aggregateHeight;
 	}
 	
 	//This function gets the bumpiness of each column
 	public int getBumpiness() {
-		int[] heights = getHeights();
+		int[] heights = new int[COLS];
+		for (int column = 0; column < COLS; column++) {
+			int row = 0;
+			while (row < ROWS && field[row][column] != 0) {
+				row++;
+			}
+			heights[column] = row;
+		}
+		
 		int bumpiness = 0;
 		for (int column = 0; column < COLS - 1; column++) {
 			bumpiness += Math.abs(heights[column] - heights[column + 1]);
