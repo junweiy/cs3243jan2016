@@ -9,6 +9,10 @@ public class State {
 
 	public boolean lost = false;
 	
+	
+	
+
+	
 	public TLabel label;
 	
 	//current turn
@@ -149,66 +153,7 @@ public class State {
 		return turn;
 	}
 	
-	//This function gets the aggregate heights of each column
-	public int getAggregateHeights() {
-		int aggregateHeight = 0;
-		for (int column = 0; column < COLS; column++) {
-			int row = 0;
-			while (row < ROWS && field[row][column] != 0) {
-				row++;
-			}
-			aggregateHeight += row;
-		}
-		return aggregateHeight;
-	}
 	
-	//This function gets the bumpiness of each column
-	public int getBumpiness() {
-		int[] heights = new int[COLS];
-		for (int column = 0; column < COLS; column++) {
-			int row = 0;
-			while (row < ROWS && field[row][column] != 0) {
-				row++;
-			}
-			heights[column] = row;
-		}
-		
-		int bumpiness = 0;
-		for (int column = 0; column < COLS - 1; column++) {
-			bumpiness += Math.abs(heights[column] - heights[column + 1]);
-		}
-		return bumpiness;
-	}
-	
-	//This function returns the number of complete lines in the field
-	public int getNumberOfCompleteLines() {
-		int completeLines = 0;
-		for (int row = 0; row < ROWS; row++) {
-			for (int column = 0; column < COLS; column++) {
-				if (field[row][column] == 0) {
-					break;
-				} else if (column == COLS - 1) {
-					completeLines++;
-				}
-			}
-		}
-		return completeLines;
-	}
-	
-	//This function calculates the number of holes in the field
-	public int getNumberOfHoles() {
-		int holes = 0;
-		for (int row = 1; row < ROWS - 1; row++) {
-			for (int column = 1; column < COLS - 1; column++) {
-				if (field[row][column] == 0 && field[row+1][column] != 0 && field[row][column+1] != 0 && 
-						field[row-1][column] != 0 && field[row][column-1] != 0) {
-					holes++;
-				}
-					
-			}
-		}
-		return holes;
-	}
 	
 	//constructor
 	public State() {

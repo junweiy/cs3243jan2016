@@ -181,7 +181,7 @@ public class State {
 	}
 	
 	//This function returns the number of complete lines in the field
-	public int getNumberOfCompleteLines() {
+	public int getCompleteLines() {
 		int completeLines = 0;
 		for (int row = 0; row < ROWS; row++) {
 			for (int column = 0; column < COLS; column++) {
@@ -193,21 +193,6 @@ public class State {
 			}
 		}
 		return completeLines;
-	}
-	
-	//This function calculates the number of holes in the field
-	public int getNumberOfHoles() {
-		int holes = 0;
-		for (int row = 1; row < ROWS - 1; row++) {
-			for (int column = 1; column < COLS - 1; column++) {
-				if (field[row][column] == 0 && field[row+1][column] != 0 && field[row][column+1] != 0 && 
-						field[row-1][column] != 0 && field[row][column-1] != 0) {
-					holes++;
-				}
-					
-			}
-		}
-		return holes;
 	}
 	
 	//constructor

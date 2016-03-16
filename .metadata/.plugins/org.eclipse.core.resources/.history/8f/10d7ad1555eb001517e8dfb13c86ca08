@@ -154,7 +154,7 @@ public class State {
 		int aggregateHeight = 0;
 		for (int column = 0; column < COLS; column++) {
 			int row = 0;
-			while (row < ROWS && field[row][column] != 0) {
+			while (field[row][column] != 0) {
 				row++;
 			}
 			aggregateHeight += row;
@@ -167,7 +167,7 @@ public class State {
 		int[] heights = new int[COLS];
 		for (int column = 0; column < COLS; column++) {
 			int row = 0;
-			while (row < ROWS && field[row][column] != 0) {
+			while (field[row][column] != 0) {
 				row++;
 			}
 			heights[column] = row;
@@ -180,35 +180,6 @@ public class State {
 		return bumpiness;
 	}
 	
-	//This function returns the number of complete lines in the field
-	public int getNumberOfCompleteLines() {
-		int completeLines = 0;
-		for (int row = 0; row < ROWS; row++) {
-			for (int column = 0; column < COLS; column++) {
-				if (field[row][column] == 0) {
-					break;
-				} else if (column == COLS - 1) {
-					completeLines++;
-				}
-			}
-		}
-		return completeLines;
-	}
-	
-	//This function calculates the number of holes in the field
-	public int getNumberOfHoles() {
-		int holes = 0;
-		for (int row = 1; row < ROWS - 1; row++) {
-			for (int column = 1; column < COLS - 1; column++) {
-				if (field[row][column] == 0 && field[row+1][column] != 0 && field[row][column+1] != 0 && 
-						field[row-1][column] != 0 && field[row][column-1] != 0) {
-					holes++;
-				}
-					
-			}
-		}
-		return holes;
-	}
 	
 	//constructor
 	public State() {
