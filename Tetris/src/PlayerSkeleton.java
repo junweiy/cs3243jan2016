@@ -1,6 +1,13 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class PlayerSkeleton {
 	
-	HeuristicParameters para = new HeuristicParameters(-0.510066, 0.760666, -0.35663, -0.184483);
+	HeuristicParameters para = new HeuristicParameters();
+	
+	public PlayerSkeleton(HeuristicParameters hp) {
+		this.para = hp;
+	}
 	
 	//implement this function to have a working system
 	public int pickMove(State s, int[][] legalMoves) {
@@ -14,10 +21,6 @@ public class PlayerSkeleton {
 				maxIndex = i;
 			}
 		}
-		if (maxScore > 0) {
-			System.out.println(maxScore);
-		}
-		
 		return maxIndex;
 	}
 	
@@ -32,23 +35,48 @@ public class PlayerSkeleton {
 		sTemp.makeMove(legalMove);
 		return sTemp;
 	}
-
 	
-	public static void main(String[] args) {
+	public static int run(HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();
 		new TFrame(s);
-		PlayerSkeleton p = new PlayerSkeleton();
+		PlayerSkeleton p = null;
+		p = new PlayerSkeleton(hp);
 		while(!s.hasLost()) {
 			s.makeMove(p.pickMove(s,s.legalMoves()));
 			s.draw();
 			s.drawNext(0,0);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		System.out.println("You have completed "+s.getRowsCleared()+" rows.");
+		return s.getRowsCleared();
+	}
+	
+	// Only difference is only 500 moves per run 
+	public static int trainingRun(HeuristicParameters hp) {
+		int moveCount = 0;
+		State s = new State();
+		PlayerSkeleton p = null;
+		p = new PlayerSkeleton(hp);
+		while(moveCount < 500) {
+			s.makeMove(p.pickMove(s,s.legalMoves()));
+			try {
+				Thread.sleep(0);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			moveCount++;
+		}
+		return s.getRowsCleared();
+	}
+
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		HeuristicParameters hp = HeuristicParameters.loadFirstHeuristicParameters();
+		run(hp);
 	}
 	
 }
