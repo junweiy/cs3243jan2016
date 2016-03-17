@@ -97,6 +97,8 @@ public class TFrame extends JFrame implements KeyListener{
 						}
 						s.clearNext();
 						s.drawNext(slot, orient);
+						System.out.println("ah: " + s.getAggregateHeights() + " b: " + s.getBumpiness() + " h: " + s.getNumberOfHoles() + " cl: "
+								+ s.getNumberOfCompleteLines());
 						break;
 					}
 					default:

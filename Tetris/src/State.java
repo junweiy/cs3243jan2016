@@ -103,6 +103,25 @@ public class State {
 	
 	}
 	
+	// Get a deep copy of a state
+	public State copy() {
+		State newState = new State();
+		newState.lost = this.lost;
+		newState.label = this.label;
+		newState.turn = this.turn;
+		newState.cleared = this.cleared;
+		for (int i = 0; i < ROWS;i++) {
+			for (int j = 0; j < COLS; j++) {
+				newState.field[i][j] = this.field[i][j];
+			}
+		}
+		for (int i = 0; i < COLS; i++) {
+			newState.top[i] = this.top[i];
+		}
+		newState.nextPiece = this.nextPiece;
+		return newState;
+	}
+	
 	
 	public int[][] getField() {
 		return field;
