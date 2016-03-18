@@ -71,7 +71,7 @@ public class HeuristicParameters {
 	}
 	
 	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader("./src/heuristic.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
 		line = br.readLine();
 		assert(line!=null);
@@ -83,7 +83,7 @@ public class HeuristicParameters {
 	}
 	
 	public static ArrayList<String> loadAllLines() throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("./src/heuristic.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
 		ArrayList<String> lines = new ArrayList<String>();
 		while ((line = br.readLine()) != null) {

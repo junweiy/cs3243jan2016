@@ -16,27 +16,36 @@ public class Training {
 	
 	private static final double ONE_QUARTER = 0.25;
 	
-	private static final int NUMBER_OF_ROUNDS = 5;
+	// Configuration for run on cluster
+	private static final int NUMBER_OF_ROUNDS = 100;
 	private static final double PERCENT_OF_HPS_TO_ADD = 0.3;
 	private static final double PERCENT_FOR_TOURNAMENT = 0.1;
-	private static final double INITIAL_INTERVAL = 0.6;
+	private static final double INITIAL_INTERVAL = 0.15;
 	private static final double CHANCE_OF_MUTATION = 0.05;
 	private static final double ADJUSTMENT_OF_MUTATION = 0.2;
 	
-	public void generateNewParametersFromTheBeginning() throws IOException {
-		// Create if not exist
-		
+	// Configuration for debugging
+//	private static final int NUMBER_OF_ROUNDS = 2;
+//	private static final double PERCENT_OF_HPS_TO_ADD = 0.3;
+//	private static final double PERCENT_FOR_TOURNAMENT = 0.1;
+//	private static final double INITIAL_INTERVAL = 0.6;
+//	private static final double CHANCE_OF_MUTATION = 0.05;
+//	private static final double ADJUSTMENT_OF_MUTATION = 0.2;
+	
+	public void generateNewParametersFromTheBeginning() throws IOException {		
 		
 		// Clear text file before generating parameters
 		PrintWriter writer = new PrintWriter("./heuristic.txt");
 		writer.print("");
 		writer.close();
 		
+		
 		Writer output;
 		output = new BufferedWriter(new FileWriter("./heuristic.txt", true));
 		NumberFormat formatter = new DecimalFormat("#0.000000");
 		
 		double score;
+		int count = 0;
 		
 		// only b is positive
 		// generate all permutations where -1 < a < 0, 0 < b < 1, -1 < c < 0, -1 < d < 0
@@ -49,6 +58,8 @@ public class Training {
 						score = computeAvgScore(hp);
 						output.append(formatter.format(a) + " " + formatter.format(b) + " " 
 					+ formatter.format(c) + " " + formatter.format(d) + " " + formatter.format(score) +  "\n");
+						count++;
+						System.out.println(count);
 					}
 				}
 			}
@@ -89,10 +100,19 @@ public class Training {
 	}
 	
 	public ArrayList<HeuristicParameters> getHPsOfCrossOvers() {
+		ArrayList<HeuristicParameters> tournamementHPs = takeRandomItemsFromAllParameters();
 		ArrayList<HeuristicParameters> temp = new ArrayList<HeuristicParameters>();
-		Collections.sort(hps, new CompareHeuristicScore());
+		Collections.sort(tournamementHPs, new CompareHeuristicScore());
 		while (temp.size() < hps.size() * PERCENT_OF_HPS_TO_ADD) {
-			HeuristicParameters tempHp = getCrossOver(hps.get(temp.size()), hps.get(temp.size() + 1));
+			HeuristicParameters tempHp;
+			if (temp.size() < (int) (hps.size() * PERCENT_FOR_TOURNAMENT) - 1) {
+				tempHp = getCrossOver(tournamementHPs.get(temp.size()), tournamementHPs.get(temp.size() + 1));
+			} else {
+				int ranNum1 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
+				int ranNum2 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
+				tempHp = getCrossOver(tournamementHPs.get(ranNum1), tournamementHPs.get(ranNum2));
+			}
+			
 			if (!isRedundant(tempHp)) {
 				temp.add(getNormalisedHP(tempHp));
 			}
@@ -102,9 +122,9 @@ public class Training {
 	
 	public ArrayList<HeuristicParameters> getHPsAfterTournament() {
 		int originalSize = hps.size();
-		System.out.println("os: "+originalSize);
+		System.out.println("#1: " + hps.size());
 		hps.addAll(getHPsOfCrossOvers());
-		System.out.println("ns: "+hps.size());
+		System.out.println("#2: " + hps.size());
 		Collections.sort(hps, new CompareHeuristicScore());
 		return new ArrayList<HeuristicParameters>(hps.subList(0, originalSize));
 	}
@@ -180,7 +200,6 @@ public class Training {
 		tr.initialise();
 		System.out.println("Initialised");
 		Collections.sort(tr.hps, new CompareHeuristicScore());
-		
 		int count = 0;
 		while(true) {
 			tr.hps = tr.getHPsAfterTournament();
