@@ -76,6 +76,7 @@ public class PlayerSkeleton {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		HeuristicParameters hp = HeuristicParameters.loadFirstHeuristicParameters();
+		System.out.println("a, b, c, d: " + hp.a + " " + hp.b + " "+ hp.c + " "+ hp.d);
 		run(hp);
 	}
 	
