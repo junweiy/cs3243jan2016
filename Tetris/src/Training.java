@@ -27,11 +27,17 @@ public class Training {
 	// Configuration for debugging
 //	private static final int NUMBER_OF_ROUNDS = 2;
 //	private static final double PERCENT_OF_HPS_TO_ADD = 0.3;
-//	private static final double PERCENT_FOR_TOURNAMENT = 0.1;
+//	private static final double PERCENT_FOR_TOURNAMENT = 0.3;
 //	private static final double INITIAL_INTERVAL = 0.6;
 //	private static final double CHANCE_OF_MUTATION = 0.05;
 //	private static final double ADJUSTMENT_OF_MUTATION = 0.2;
 	
+	
+	/**
+	 * The method generate lines that contain all permutations of parameters with given interval and write
+	 * all lines into a text file. 
+	 * @throws IOException Cannot write file.
+	 */
 	public void generateNewParametersFromTheBeginning() throws IOException {		
 		
 		// Clear text file before generating parameters
@@ -67,6 +73,11 @@ public class Training {
 		output.close();
 	}
 	
+	/**
+	 * Compute/Normalise the score of HP for computing the score for multiple times.
+	 * @param hp HP function used to run the game.
+	 * @return A normalised score.
+	 */
 	public static double computeAvgScore(HeuristicParameters hp) {
 		double score = 0;
 		for (int i = 0; i < NUMBER_OF_ROUNDS; i++) {
@@ -75,6 +86,10 @@ public class Training {
 		return score / NUMBER_OF_ROUNDS;
 	}
 	
+	/**
+	 * Initialisation by loading all lines into an arraylist of HPs.
+	 * @throws IOException Cannot load properly.
+	 */
 	public void initialise() throws IOException {
 		lines = HeuristicParameters.loadAllLines();
 		for (String l: lines) {
@@ -82,6 +97,10 @@ public class Training {
 		}
 	}
 	
+	/**
+	 * Take random items for a given percent into an arraylist.
+	 * @return An arraylist of random picked HPs.
+	 */
 	public ArrayList<HeuristicParameters> takeRandomItemsFromAllParameters() {
 		Random randomGenerator = new Random();
 		ArrayList<HeuristicParameters> temp = new ArrayList<HeuristicParameters>();
@@ -92,6 +111,12 @@ public class Training {
 		return temp;
 	}
 	
+	/**
+	 * Get the crossover of two HPs.
+	 * @param a HP a.
+	 * @param b HP b.
+	 * @return Crossed HP.
+	 */
 	public HeuristicParameters getCrossOver(HeuristicParameters a, HeuristicParameters b) {
 		HeuristicParameters temp = new HeuristicParameters(a, b);
 		applyMutation(temp);
@@ -99,13 +124,17 @@ public class Training {
 		return temp;
 	}
 	
+	/**
+	 * Get given number of HPs from crossovers combined by random picked HPs from all HPs.
+	 * @return An arraylist of all generated crossovers.
+	 */
 	public ArrayList<HeuristicParameters> getHPsOfCrossOvers() {
 		ArrayList<HeuristicParameters> tournamementHPs = takeRandomItemsFromAllParameters();
 		ArrayList<HeuristicParameters> temp = new ArrayList<HeuristicParameters>();
 		Collections.sort(tournamementHPs, new CompareHeuristicScore());
 		while (temp.size() < hps.size() * PERCENT_OF_HPS_TO_ADD) {
 			HeuristicParameters tempHp;
-			if (temp.size() < (int) (hps.size() * PERCENT_FOR_TOURNAMENT) - 1) {
+			if (temp.size() < (int) (hps.size() * PERCENT_FOR_TOURNAMENT)) {
 				tempHp = getCrossOver(tournamementHPs.get(temp.size()), tournamementHPs.get(temp.size() + 1));
 			} else {
 				int ranNum1 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
@@ -120,15 +149,22 @@ public class Training {
 		return temp;
 	}
 	
+	/**
+	 * Get the New arraylist of HPs by adding all crossovers and taking the tops with given percent.
+	 * @return An arraylist of sorted and updated HPs.
+	 */
 	public ArrayList<HeuristicParameters> getHPsAfterTournament() {
 		int originalSize = hps.size();
-		System.out.println("#1: " + hps.size());
 		hps.addAll(getHPsOfCrossOvers());
-		System.out.println("#2: " + hps.size());
 		Collections.sort(hps, new CompareHeuristicScore());
 		return new ArrayList<HeuristicParameters>(hps.subList(0, originalSize));
 	}
 	
+	/**
+	 * Check if a HP already exists or is a multiple vector of an existing HP. 
+	 * @param hp A HP object for checking.
+	 * @return A boolean value to indicate if it is redundant.
+	 */
 	public boolean isRedundant(HeuristicParameters hp) {
 		for (int i = 0; i < hps.size(); i++) {
 			double quotientA = hps.get(i).a / hp.a;
@@ -155,6 +191,10 @@ public class Training {
 		return new HeuristicParameters(newA, newB, newC, newD, hp.score);
 	}
 	
+	/**
+	 * Randomly apply mutation by randomly altering one of four parameters with random adjustment.
+	 * @param hp A HP object to be applied mutation.
+	 */
 	public void applyMutation(HeuristicParameters hp) {
 		if (Math.random() < CHANCE_OF_MUTATION) {
 			System.out.println("Mutated.");
@@ -195,7 +235,8 @@ public class Training {
 		// Try to implement genetic algorithm
 		Training tr = new Training();
 		// Only uncomment generateNewParameter method when restarting training
-		tr.generateNewParametersFromTheBeginning();
+		//tr.generateNewParametersFromTheBeginning();
+		System.exit(0);
 		System.out.println("Generated");
 		tr.initialise();
 		System.out.println("Initialised");

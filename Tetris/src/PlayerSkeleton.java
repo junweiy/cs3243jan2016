@@ -3,6 +3,8 @@ import java.io.IOException;
 
 public class PlayerSkeleton {
 	
+	private static final int NUMBER_OF_BRICKS = 500;
+	
 	HeuristicParameters para = new HeuristicParameters();
 	
 	public PlayerSkeleton(HeuristicParameters hp) {
@@ -24,6 +26,14 @@ public class PlayerSkeleton {
 		return maxIndex;
 	}
 	
+	/**
+	 * Calculate the score/value of fitness function by a * aggregatedHeight + b * completedLine +
+	 * c * numberOfHoles + d * bumpiness
+	 * @param currentState The current state.
+	 * @param nextState The next state for calculation of completedLine.
+	 * @param para Heuristic parameters.
+	 * @return The value of the fitness function.
+	 */
 	public double getScore(State currentState, State nextState, HeuristicParameters para) {
 		int completedLine = nextState.getRowsCleared() - currentState.getRowsCleared();
 		return para.a * nextState.getAggregateHeights() + para.b * completedLine 
@@ -55,13 +65,18 @@ public class PlayerSkeleton {
 		return s.getRowsCleared();
 	}
 	
-	// Only difference is only 500 moves per run 
+	/**
+	 * The method run the game with a given combination of heuristic parameters within given number of  
+	 * bricks and return the number of lines cleared as the result of fitness function.
+	 * @param hp A combination of heuristic parameters.
+	 * @return The value of the fitness function with given heuristics. 
+	 */
 	public static int trainingRun(HeuristicParameters hp) {
 		int moveCount = 0;
 		State s = new State();
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
-		while(moveCount < 500) {
+		while(moveCount < NUMBER_OF_BRICKS) {
 			s.makeMove(p.pickMove(s,s.legalMoves()));
 			try {
 				Thread.sleep(0);
