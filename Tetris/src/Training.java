@@ -231,20 +231,29 @@ public class Training {
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		// Try to implement genetic algorithm
 		Training tr = new Training();
 		// Only uncomment generateNewParameter method when restarting training
 		//tr.generateNewParametersFromTheBeginning();
-		System.exit(0);
-		System.out.println("Generated");
-		tr.initialise();
+		//System.out.println("Generated");
+		try {
+			tr.initialise();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println("Initialised");
 		Collections.sort(tr.hps, new CompareHeuristicScore());
 		int count = 0;
 		while(true) {
 			tr.hps = tr.getHPsAfterTournament();
-			tr.saveToFile();
+			try {
+				tr.saveToFile();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			count++;
 			System.out.println(count);
 		}
