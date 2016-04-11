@@ -19,7 +19,7 @@ public class Training {
 	// Configuration for run on cluster
 	private static final int NUMBER_OF_ROUNDS = 100;
 	private static final double PERCENT_OF_HPS_TO_ADD = 0.3;
-	private static final double PERCENT_FOR_TOURNAMENT = 0.1;
+	private static final double PERCENT_FOR_TOURNAMENT = 0.3;
 	private static final double INITIAL_INTERVAL = 0.15;
 	private static final double CHANCE_OF_MUTATION = 0.05;
 	private static final double ADJUSTMENT_OF_MUTATION = 0.2;
@@ -37,7 +37,7 @@ public class Training {
 	 * The method generate lines that contain all permutations of parameters with given interval and write
 	 * all lines into a text file. 
 	 * @throws IOException Cannot write file.
-	 */
+	 */			
 	public void generateNewParametersFromTheBeginning() throws IOException {		
 		
 		// Clear text file before generating parameters
@@ -54,8 +54,25 @@ public class Training {
 		int count = 0;
 		
 		// only b is positive
-		// generate all permutations where -1 < a < 0, 0 < b < 1, -1 < c < 0, -1 < d < 0
 		
+		// Random Generation
+		while(count<50){
+			double a=getRandomNumberFromInterval(-1,0);
+			double b=getRandomNumberFromInterval(0,1);
+			double c=getRandomNumberFromInterval(-1,0);
+			double d=getRandomNumberFromInterval(-1,0);
+			
+			HeuristicParameters hp = new HeuristicParameters(a, b, c, d, 0);
+			score = computeAvgScore(hp);
+			output.append(formatter.format(a) + " " + formatter.format(b) + " " 
+			+ formatter.format(c) + " " + formatter.format(d) + " " + formatter.format(score) +  "\n");
+			count++;
+			System.out.println(count);
+		}
+		
+		/*
+		// generate all permutations where -1 < a < 0, 0 < b < 1, -1 < c < 0, -1 < d < 0
+	
 		for (double a = -1; a <= 0; a+=INITIAL_INTERVAL) {
 			for (double b = 0; b <= 1; b+=INITIAL_INTERVAL) {
 				for (double c = -1; c <= 0; c+=INITIAL_INTERVAL) {
@@ -69,7 +86,7 @@ public class Training {
 					}
 				}
 			}
-		}
+		}*/
 		output.close();
 	}
 	
@@ -104,7 +121,7 @@ public class Training {
 	public ArrayList<HeuristicParameters> takeRandomItemsFromAllParameters() {
 		Random randomGenerator = new Random();
 		ArrayList<HeuristicParameters> temp = new ArrayList<HeuristicParameters>();
-		while (temp.size() < hps.size() * PERCENT_FOR_TOURNAMENT) {
+		while (temp.size() < (hps.size() * PERCENT_FOR_TOURNAMENT)) {
 			int index = randomGenerator.nextInt(hps.size());
 			temp.add(hps.get(index));
 		}
@@ -132,19 +149,25 @@ public class Training {
 		ArrayList<HeuristicParameters> tournamementHPs = takeRandomItemsFromAllParameters();
 		ArrayList<HeuristicParameters> temp = new ArrayList<HeuristicParameters>();
 		Collections.sort(tournamementHPs, new CompareHeuristicScore());
-		while (temp.size() < hps.size() * PERCENT_OF_HPS_TO_ADD) {
-			HeuristicParameters tempHp;
-			if (temp.size() < (int) (hps.size() * PERCENT_FOR_TOURNAMENT)) {
-				tempHp = getCrossOver(tournamementHPs.get(temp.size()), tournamementHPs.get(temp.size() + 1));
-			} else {
-				int ranNum1 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
-				int ranNum2 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
-				tempHp = getCrossOver(tournamementHPs.get(ranNum1), tournamementHPs.get(ranNum2));
-			}
-			
-			if (!isRedundant(tempHp)) {
+
+		HeuristicParameters tempHp;
+		
+		int tour = (int) (hps.size() * PERCENT_FOR_TOURNAMENT);
+		for(int i=0; i<tour; i++){
+			for(int j=i+1; j<tour; j++){
+				tempHp = getCrossOver(tournamementHPs.get(i), tournamementHPs.get(j));
 				temp.add(getNormalisedHP(tempHp));
 			}
+		}
+
+		while (temp.size() < hps.size() * PERCENT_OF_HPS_TO_ADD) {
+			int ranNum1 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
+			int ranNum2 = (int)(getRandomNumberFromInterval(0, tournamementHPs.size()));
+			tempHp = getCrossOver(tournamementHPs.get(ranNum1), tournamementHPs.get(ranNum2));
+			
+			//if (!isRedundant(tempHp)) {
+				temp.add(getNormalisedHP(tempHp));
+			//}
 		}
 		return temp;
 	}
@@ -179,7 +202,7 @@ public class Training {
 	}
 	
 	public double getRandomNumberFromInterval(double a, double b) {
-		return a + Math.random() * (b - a);
+		return Math.floor(a + Math.random() * (b - a));
 	}
 	
 	public HeuristicParameters getNormalisedHP(HeuristicParameters hp) {
@@ -234,14 +257,16 @@ public class Training {
 	public static void main(String[] args) {
 		// Try to implement genetic algorithm
 		Training tr = new Training();
-		// Only uncomment generateNewParameter method when restarting training
-		//tr.generateNewParametersFromTheBeginning();
-		//System.out.println("Generated");
 		try {
-			tr.initialise();
+			// Only uncomment generateNewParameter method when restarting training
+			//tr.generateNewParametersFromTheBeginning();
+		
+			tr.initialise(); //comment this as well
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		//System.out.println("Generated");
 		
 		System.out.println("Initialised");
 		Collections.sort(tr.hps, new CompareHeuristicScore());
