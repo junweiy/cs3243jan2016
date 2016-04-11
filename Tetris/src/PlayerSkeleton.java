@@ -3,7 +3,6 @@ import java.io.IOException;
 
 public class PlayerSkeleton {
 	
-	private static final int NUMBER_OF_BRICKS = 500;
 	
 	HeuristicParameters para = new HeuristicParameters();
 	
@@ -62,29 +61,6 @@ public class PlayerSkeleton {
 			}
 		}
 		System.out.println("You have completed "+s.getRowsCleared()+" rows.");
-		return s.getRowsCleared();
-	}
-	
-	/**
-	 * The method run the game with a given combination of heuristic parameters within given number of  
-	 * bricks and return the number of lines cleared as the result of fitness function.
-	 * @param hp A combination of heuristic parameters.
-	 * @return The value of the fitness function with given heuristics. 
-	 */
-	public static int trainingRun(HeuristicParameters hp) {
-		int moveCount = 0;
-		State s = new State();
-		PlayerSkeleton p = null;
-		p = new PlayerSkeleton(hp);
-		while(moveCount < NUMBER_OF_BRICKS) {
-			s.makeMove(p.pickMove(s,s.legalMoves()));
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			moveCount++;
-		}
 		return s.getRowsCleared();
 	}
 
