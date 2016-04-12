@@ -15,12 +15,16 @@ import org.jgap.Genotype;
 import org.jgap.IChromosome;
 import org.jgap.InvalidConfigurationException;
 import org.jgap.Population;
+import org.jgap.audit.EvolutionMonitor;
+import org.jgap.audit.IEvolutionMonitor;
 import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.DoubleGene;
 
 public class GeneticAlgorithms {
 	
 	private static final int POPULATION = 100;  
+	private static final int EVOLVETIME = 500;
+	private static final int MAXTHREAD = 4;
 	
 	public static void main(String[] args) throws InvalidConfigurationException, IOException {
 		Configuration conf = new DefaultConfiguration();
@@ -41,6 +45,7 @@ public class GeneticAlgorithms {
 		conf.setSampleChromosome(heuristics);
 		
 		Population pop = new Population(conf);
+		
 				
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
@@ -70,9 +75,12 @@ public class GeneticAlgorithms {
 		conf.setPopulationSize(POPULATION);
 		Genotype population = new Genotype(conf, pop);
 		
-		for (int i = 0; i < 500; i++) {
+		
+		for (int i = 0; i < EVOLVETIME; i++) {
 			population.evolve();
-			System.out.println("Best: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " + population.getFittestChromosome().getFitnessValue());
+			System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
+			+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
+			" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
 			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
 		}
 	}
@@ -93,7 +101,6 @@ public class GeneticAlgorithms {
 			}
 			output.append("\n");
 		}
-		System.out.println("Saved.");
 		output.close();
 	}
 	

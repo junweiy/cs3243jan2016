@@ -28,7 +28,6 @@ public class TetrisFitnessFunction extends FitnessFunction {
 				e1.printStackTrace();
 			}
 		}
-		System.out.println(totalScore + " " + (double)totalScore / NUMBER_OF_ROUNDS);
 		return (double)totalScore / NUMBER_OF_ROUNDS;
 	}
 
