@@ -17,8 +17,12 @@ import org.jgap.InvalidConfigurationException;
 import org.jgap.Population;
 import org.jgap.audit.EvolutionMonitor;
 import org.jgap.audit.IEvolutionMonitor;
+import org.jgap.event.GeneticEvent;
+import org.jgap.event.GeneticEventListener;
 import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.DoubleGene;
+import org.jgap.impl.GABreeder;
+import org.jgap.impl.job.SimplePopulationSplitter;
 
 public class GeneticAlgorithms {
 	
@@ -26,10 +30,12 @@ public class GeneticAlgorithms {
 	private static final int EVOLVETIME = 500;
 	private static final int MAXTHREAD = 4;
 	
-	public static void main(String[] args) throws InvalidConfigurationException, IOException {
+	public static void main(String[] args) throws Exception {
 		Configuration conf = new DefaultConfiguration();
 		
 		FitnessFunction myFunc = new TetrisFitnessFunction();
+		
+		SimplePopulationSplitter splitter = new SimplePopulationSplitter(MAXTHREAD);
 		
 		conf.setFitnessFunction(myFunc);
 		
@@ -49,7 +55,7 @@ public class GeneticAlgorithms {
 				
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
-//		conf.setPopulationSize(POPULATION);
+//		conf.setPopulationSize(POPULATION * MAXTHREAD);
 //		Genotype initPopulation = Genotype.randomInitialGenotype(conf);
 //		saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
 		
@@ -72,7 +78,8 @@ public class GeneticAlgorithms {
 			pop.addChromosome(newChr);
 		}
 		br.close();
-		conf.setPopulationSize(POPULATION);
+		conf.setPopulationSize(POPULATION * MAXTHREAD);
+		Population[] pops = splitter.split(pop);
 		Genotype population = new Genotype(conf, pop);
 		
 		
@@ -83,6 +90,40 @@ public class GeneticAlgorithms {
 			" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
 			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
 		}
+	}
+	
+	public static Population[] multiThreadedEvolve(Population[] pops, Chromosome sampleChromosome, FitnessFunction func) throws InvalidConfigurationException {
+		Population[] newpops = new Population[MAXTHREAD];
+		for (int i = 0; i < MAXTHREAD; i++) {
+			Configuration gaconf = new DefaultConfiguration(i + "", "multithreaded");
+			gaconf.setSampleChromosome(sampleChromosome);
+			gaconf.setPopulationSize(POPULATION);
+			gaconf.setFitnessFunction(func);
+			Genotype genotype = new Genotype(gaconf, pops[i]);
+			
+			final IEvolutionMonitor monitor = new EvolutionMonitor();
+	        genotype.setUseMonitor(true);
+	        genotype.setMonitor(monitor);
+	        gaconf.setMonitor(monitor);
+	        
+	        final Thread t1 = new Thread(genotype);
+	        gaconf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener() {
+				public void geneticEventFired(GeneticEvent a_firedEvent) {
+					GABreeder genotype = (GABreeder) a_firedEvent.getSource();
+					int evno = genotype.getLastConfiguration().getGenerationNr();
+					if (evno > EVOLVETIME) {
+						t1.interrupt();
+						monitor.getPopulations();
+						Population p = genotype.getLastPopulation();
+						newpops[i] = p;
+						// Stuck here
+					}
+				}
+	        	
+	        });
+	        	
+		}
+		return newpops;
 	}
 	
 	public static void saveToFile(List<Chromosome> chromosomes) throws IOException {
