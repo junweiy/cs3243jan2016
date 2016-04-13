@@ -30,8 +30,8 @@ import org.jgap.impl.FittestPopulationMerger;
 
 public class GeneticAlgorithms {
 	
-	private static final int POPULATION = 5;  
-	private static final int EVOLVETIME = 2;
+	private static final int POPULATION = 100;  
+	private static final int EVOLVETIME = 500;
 	private static final int MAXTHREAD = 4;
 
 	static Semaphore mutex = new Semaphore(1);
@@ -87,23 +87,19 @@ public class GeneticAlgorithms {
 		Population[] pops = splitter.split(pop);
 		Genotype population = new Genotype(conf, pop);
 		
-		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
-		//System.out.println("hi");
-		//Population test=pops2[0];
-		Population test = mergeEvolvedPopulations(pops2);
-		System.out.println(test.determineFittestChromosome().getFitnessValue());
+		//Without MultiThreading
+		/*for (int i = 0; i < EVOLVETIME; i++) {
+			population.evolve();
+			System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " + population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + " " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
+			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
+		}*/
 
-		/*System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
-		+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
-		" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
-		*/
-		//saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
-		
-		/*System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " 
-		+ test.determineFittestChromosome().getGenes()[1].getAllele() + " " + test.determineFittestChromosome().getGenes()[2].getAllele() + 
-		" " + test.determineFittestChromosome().getGenes()[3].getAllele() + ", score: " + test.determineFittestChromosome().getFitnessValue());
-		*/
-		//saveToFile(test.determineFittestChromosomes(POPULATION));
+		//With MultiThreading
+		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
+		Population test = mergeEvolvedPopulations(pops2);
+		//System.out.println(test.determineFittestChromosome().getFitnessValue());
+		System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " + test.determineFittestChromosome().getGenes()[1].getAllele() + " " + test.determineFittestChromosome().getGenes()[2].getAllele() + " " + test.determineFittestChromosome().getGenes()[3].getAllele() + ", score: " + test.determineFittestChromosome().getFitnessValue());		
+		saveToFile(test.determineFittestChromosomes(POPULATION));
 	}
 	
 	public static Population mergeEvolvedPopulations(Population[] pops){
