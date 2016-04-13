@@ -35,6 +35,9 @@ public class PlayerSkeleton {
 	 */
 	public double getScore(State currentState, State nextState, HeuristicParameters para) {
 		int completedLine = nextState.getRowsCleared() - currentState.getRowsCleared();
+		if (nextState.hasLost()) {
+			return Double.NEGATIVE_INFINITY;
+		}
 		return para.a * nextState.getAggregateHeights() + para.b * completedLine 
 				+ para.c * nextState.getNumberOfHoles() + para.d * nextState.getBumpiness();
 	}

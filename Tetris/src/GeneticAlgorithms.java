@@ -19,6 +19,7 @@ import org.jgap.audit.EvolutionMonitor;
 import org.jgap.audit.IEvolutionMonitor;
 import org.jgap.event.GeneticEvent;
 import org.jgap.event.GeneticEventListener;
+import org.jgap.impl.BestChromosomesSelector;
 import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.DoubleGene;
 import org.jgap.impl.GABreeder;
@@ -97,6 +98,10 @@ public class GeneticAlgorithms {
 			gaconf.setSampleChromosome(sampleChromosome);
 			gaconf.setPopulationSize(POPULATION);
 			gaconf.setFitnessFunction(func);
+			gaconf.getNaturalSelectors(false).clear();
+			BestChromosomesSelector bcs = new BestChromosomesSelector(gaconf, 1.0d);
+			bcs.setDoubletteChromosomesAllowed(false);
+			gaconf.addNaturalSelector(bcs, false);
 			Genotype genotype = new Genotype(gaconf, pops[i]);
 			
 			final IEvolutionMonitor monitor = new EvolutionMonitor();

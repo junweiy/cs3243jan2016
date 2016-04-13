@@ -37,7 +37,7 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		int moveCount = 0;
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
-		while(moveCount < NUMBER_OF_BRICKS) {
+		while(moveCount < NUMBER_OF_BRICKS && !s.hasLost()) {
 			s.makeMove(p.pickMove(s,s.legalMoves()));
 			try {
 				Thread.sleep(0);
