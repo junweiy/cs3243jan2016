@@ -26,10 +26,10 @@ import org.jgap.impl.job.SimplePopulationSplitter;
 
 public class GeneticAlgorithms {
 	
-	private static final int POPULATION = 100;  
-	private static final int EVOLVETIME = 500;
+	private static final int POPULATION = 5;  
+	private static final int EVOLVETIME = 2;
 	private static final int MAXTHREAD = 4;
-	
+
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new DefaultConfiguration();
 		
@@ -44,7 +44,7 @@ public class GeneticAlgorithms {
 		heuristic[0] = new DoubleGene(conf, 0, 1);
 		heuristic[1] = new DoubleGene(conf, -1, 0);
 		heuristic[2] = new DoubleGene(conf, 0, 1);
-		heuristic[3] = new DoubleGene(conf, 0, 1);
+		heuristic[3] = new DoubleGene(conf, 0, 1);	
 		
 		Chromosome heuristics = new Chromosome(conf, heuristic);
 		
@@ -55,9 +55,9 @@ public class GeneticAlgorithms {
 				
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
-//		conf.setPopulationSize(POPULATION * MAXTHREAD);
-//		Genotype initPopulation = Genotype.randomInitialGenotype(conf);
-//		saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
+		//conf.setPopulationSize(POPULATION * MAXTHREAD);
+		//Genotype initPopulation = Genotype.randomInitialGenotype(conf);
+		//saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
 		
 		// Load population from file
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
@@ -82,18 +82,16 @@ public class GeneticAlgorithms {
 		Population[] pops = splitter.split(pop);
 		Genotype population = new Genotype(conf, pop);
 		
-		
-		for (int i = 0; i < EVOLVETIME; i++) {
-			population.evolve();
-			System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
-			+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
-			" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
-			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
-		}
+		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
+		System.out.println("hi");
+		Population test=pops2[0];
+		System.out.println(test.determineFittestChromosome().getFitnessValue());
 	}
 	
 	public static Population[] multiThreadedEvolve(Population[] pops, Chromosome sampleChromosome, FitnessFunction func) throws InvalidConfigurationException {
 		Population[] newpops = new Population[MAXTHREAD];
+		
+		ThreadGroup tg = new ThreadGroup("main");
 		for (int i = 0; i < MAXTHREAD; i++) {
 			Configuration gaconf = new DefaultConfiguration(i + "", "multithreaded");
 			gaconf.setSampleChromosome(sampleChromosome);
@@ -105,25 +103,34 @@ public class GeneticAlgorithms {
 	        genotype.setUseMonitor(true);
 	        genotype.setMonitor(monitor);
 	        gaconf.setMonitor(monitor);
-	        
-	        final Thread t1 = new Thread(genotype);
+	        final int j=i;
+	        final Thread t1 = new Thread(tg,genotype);
 	        gaconf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener() {
 				public void geneticEventFired(GeneticEvent a_firedEvent) {
+					
 					GABreeder genotype = (GABreeder) a_firedEvent.getSource();
 					int evno = genotype.getLastConfiguration().getGenerationNr();
 					if (evno > EVOLVETIME) {
 						t1.interrupt();
-						monitor.getPopulations();
+						System.out.println("thread "+j+" ended");
 						Population p = genotype.getLastPopulation();
-						newpops[i] = p;
-						// Stuck here
+						newpops[j] = p;
+						t1.stop();
 					}
-				}
-	        	
+				}	        	
 	        });
-	        	
+	        t1.start();
 		}
-		return newpops;
+		while(true){
+			try{
+				if(tg.activeCount()>0){
+					Thread.sleep(5000);
+				}else{
+					return newpops;
+				}
+			}catch(InterruptedException e){}
+       		
+		}
 	}
 	
 	public static void saveToFile(List<Chromosome> chromosomes) throws IOException {
