@@ -17,6 +17,7 @@ import org.jgap.InvalidConfigurationException;
 import org.jgap.Population;
 import org.jgap.audit.EvolutionMonitor;
 import org.jgap.audit.IEvolutionMonitor;
+import org.jgap.distr.IPopulationMerger;
 import org.jgap.event.GeneticEvent;
 import org.jgap.event.GeneticEventListener;
 import org.jgap.impl.BestChromosomesSelector;
@@ -24,6 +25,7 @@ import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.DoubleGene;
 import org.jgap.impl.GABreeder;
 import org.jgap.impl.job.SimplePopulationSplitter;
+import org.jgap.impl.FittestPopulationMerger;
 
 public class GeneticAlgorithms {
 	
@@ -85,12 +87,26 @@ public class GeneticAlgorithms {
 		
 		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
 		System.out.println("hi");
-		Population test=pops2[0];
+//		Population test=pops2[0];
+		Population test = mergeEvolvedPopulations(pops2);
 		System.out.println(test.determineFittestChromosome().getFitnessValue());
 	}
 	
+	public static Population mergeEvolvedPopulations(Population[] pops){
+		Population mergedPops= null;
+
+		IPopulationMerger merger = new FittestPopulationMerger();
+		mergedPops = merger.mergePopulations(pops[0], pops[1], POPULATION * 2);
+
+		for(int i = 2; i< MAXTHREAD; i++){
+			mergedPops = merger.mergePopulations(mergedPops, pops[i], POPULATION * (i+1));
+		}
+
+		return mergedPops;
+	}
+	
 	public static Population[] multiThreadedEvolve(Population[] pops, Chromosome sampleChromosome, FitnessFunction func) throws InvalidConfigurationException {
-		Population[] newpops = new Population[MAXTHREAD];
+		final Population[] newpops = new Population[MAXTHREAD];
 		
 		ThreadGroup tg = new ThreadGroup("main");
 		for (int i = 0; i < MAXTHREAD; i++) {
