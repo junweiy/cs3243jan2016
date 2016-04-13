@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.jgap.Chromosome;
 import org.jgap.Configuration;
@@ -33,6 +34,8 @@ public class GeneticAlgorithms {
 	private static final int EVOLVETIME = 2;
 	private static final int MAXTHREAD = 4;
 
+	static Semaphore mutex = new Semaphore(1);
+
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new DefaultConfiguration();
 		
@@ -54,8 +57,7 @@ public class GeneticAlgorithms {
 		conf.setSampleChromosome(heuristics);
 		
 		Population pop = new Population(conf);
-		
-				
+			
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
 		//conf.setPopulationSize(POPULATION * MAXTHREAD);
@@ -86,10 +88,22 @@ public class GeneticAlgorithms {
 		Genotype population = new Genotype(conf, pop);
 		
 		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
-		System.out.println("hi");
-//		Population test=pops2[0];
+		//System.out.println("hi");
+		//Population test=pops2[0];
 		Population test = mergeEvolvedPopulations(pops2);
 		System.out.println(test.determineFittestChromosome().getFitnessValue());
+
+		/*System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
+		+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
+		" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
+		*/
+		//saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
+		
+		/*System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " 
+		+ test.determineFittestChromosome().getGenes()[1].getAllele() + " " + test.determineFittestChromosome().getGenes()[2].getAllele() + 
+		" " + test.determineFittestChromosome().getGenes()[3].getAllele() + ", score: " + test.determineFittestChromosome().getFitnessValue());
+		*/
+		//saveToFile(test.determineFittestChromosomes(POPULATION));
 	}
 	
 	public static Population mergeEvolvedPopulations(Population[] pops){
@@ -130,12 +144,37 @@ public class GeneticAlgorithms {
 				public void geneticEventFired(GeneticEvent a_firedEvent) {
 					
 					GABreeder genotype = (GABreeder) a_firedEvent.getSource();
+					
+					//Tries to acquire a permit from this semaphore
+					try {
+						mutex.acquire();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+					
 					int evno = genotype.getLastConfiguration().getGenerationNr();
+					
+					//Release the permit
+					mutex.release();
+					
 					if (evno > EVOLVETIME) {
 						t1.interrupt();
 						System.out.println("thread "+j+" ended");
 						Population p = genotype.getLastPopulation();
+						
+						//Tries to acquire a permit from this semaphore
+						try {
+							mutex.acquire();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							//e.printStackTrace();
+						}
+						
 						newpops[j] = p;
+						
+						//Release the permit
+						mutex.release();
 						t1.stop();
 					}
 				}	        	
