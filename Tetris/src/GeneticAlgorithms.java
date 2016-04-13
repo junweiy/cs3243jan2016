@@ -17,12 +17,14 @@ import org.jgap.InvalidConfigurationException;
 import org.jgap.Population;
 import org.jgap.audit.EvolutionMonitor;
 import org.jgap.audit.IEvolutionMonitor;
+import org.jgap.distr.IPopulationMerger;
 import org.jgap.event.GeneticEvent;
 import org.jgap.event.GeneticEventListener;
 import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.DoubleGene;
 import org.jgap.impl.GABreeder;
 import org.jgap.impl.job.SimplePopulationSplitter;
+import org.jgap.impl.FittestPopulationMerger;
 
 public class GeneticAlgorithms {
 	
@@ -81,51 +83,80 @@ public class GeneticAlgorithms {
 		conf.setPopulationSize(POPULATION * MAXTHREAD);
 		Population[] pops = splitter.split(pop);
 		Genotype population = new Genotype(conf, pop);
-		
-		
+
 		for (int i = 0; i < EVOLVETIME; i++) {
-			population.evolve();
-			System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
-			+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
-			" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
-			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
+			Population[] multiPops = multiThreadedEvolve(pops, heuristics, myFunc);
+			Population evolvedPops = mergeEvolvedPopulations(multiPops);
+			Genotype evPops = new Genotype(conf, evolvedPops);
+
+			System.out.println("Best solution so far: " + evPops.getFittestChromosome().getGenes()[0].getAllele() + " "
+			+ evPops.getFittestChromosome().getGenes()[1].getAllele() + " " + evPops.getFittestChromosome().getGenes()[2].getAllele() +
+			" " + evPops.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + evPops.getFittestChromosome().getFitnessValue());
+			saveToFile(evPops.getPopulation().determineFittestChromosomes(POPULATION));
+
+//			population.evolve();
+//			System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " 
+//			+ population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + 
+//			" " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
+//			saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
 		}
 	}
 	
+	public static Population mergeEvolvedPopulations(Population[] pops){
+		Population mergedPops= null;
+
+		IPopulationMerger merger = new FittestPopulationMerger();
+		mergedPops = merger.mergePopulations(pops[0], pops[1], POPULATION * 2);
+
+		for(int i = 2; i< MAXTHREAD; i++){
+			mergedPops = merger.mergePopulations(mergedPops, pops[i], POPULATION * (i+1));
+		}
+
+		return mergedPops;
+	}
+
 	public static Population[] multiThreadedEvolve(Population[] pops, Chromosome sampleChromosome, FitnessFunction func) throws InvalidConfigurationException {
-		Population[] newpops = new Population[MAXTHREAD];
+		final Population[] newpops = new Population[MAXTHREAD];
 		for (int i = 0; i < MAXTHREAD; i++) {
+			final int j = i;
+			Configuration.reset(i + "");
 			Configuration gaconf = new DefaultConfiguration(i + "", "multithreaded");
 			gaconf.setSampleChromosome(sampleChromosome);
 			gaconf.setPopulationSize(POPULATION);
 			gaconf.setFitnessFunction(func);
 			Genotype genotype = new Genotype(gaconf, pops[i]);
-			
+
 			final IEvolutionMonitor monitor = new EvolutionMonitor();
-	        genotype.setUseMonitor(true);
-	        genotype.setMonitor(monitor);
-	        gaconf.setMonitor(monitor);
-	        
-	        final Thread t1 = new Thread(genotype);
-	        gaconf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener() {
-				public void geneticEventFired(GeneticEvent a_firedEvent) {
+			genotype.setUseMonitor(true);
+			genotype.setMonitor(monitor);
+			gaconf.setMonitor(monitor);
+
+			final Thread t1 = new Thread(genotype);
+			gaconf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener() {
+				public synchronized void geneticEventFired(GeneticEvent a_firedEvent) {
 					GABreeder genotype = (GABreeder) a_firedEvent.getSource();
 					int evno = genotype.getLastConfiguration().getGenerationNr();
 					if (evno > EVOLVETIME) {
 						t1.interrupt();
 						monitor.getPopulations();
 						Population p = genotype.getLastPopulation();
-						newpops[i] = p;
-						// Stuck here
+						newpops[j] = p;
+					}else{
+						try {
+							t1.sleep( (j + 1) * 3);
+						} catch (InterruptedException iex) {
+							iex.printStackTrace();
+							System.exit(1);
+						}
 					}
 				}
-	        	
-	        });
-	        	
+			});
+			t1.setPriority( (i % 2) + 1);
+		    t1.start();
 		}
 		return newpops;
 	}
-	
+
 	public static void saveToFile(List<Chromosome> chromosomes) throws IOException {
 		
 		// Clear text file before saving
