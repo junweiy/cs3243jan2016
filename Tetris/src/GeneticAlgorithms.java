@@ -31,7 +31,7 @@ import org.jgap.impl.FittestPopulationMerger;
 public class GeneticAlgorithms {
 	
 	private static final int POPULATION = 100;  
-	private static final int EVOLVETIME = 500;
+	private static final int EVOLVETIME = 2;
 	private static final int MAXTHREAD = 4;
 
 	static Semaphore mutex = new Semaphore(1);
@@ -47,10 +47,10 @@ public class GeneticAlgorithms {
 		
 		Gene[] heuristic = new Gene[4];
 		
-		heuristic[0] = new DoubleGene(conf, 0, 1);
-		heuristic[1] = new DoubleGene(conf, -1, 0);
-		heuristic[2] = new DoubleGene(conf, 0, 1);
-		heuristic[3] = new DoubleGene(conf, 0, 1);	
+		heuristic[0] = new DoubleGene(conf, -1, 0);
+		heuristic[1] = new DoubleGene(conf, 0, 1);
+		heuristic[2] = new DoubleGene(conf, -1, 0);
+		heuristic[3] = new DoubleGene(conf, -1, 0);	
 		
 		Chromosome heuristics = new Chromosome(conf, heuristic);
 		
@@ -150,7 +150,6 @@ public class GeneticAlgorithms {
 					}
 					
 					int evno = genotype.getLastConfiguration().getGenerationNr();
-					
 					//Release the permit
 					mutex.release();
 					
@@ -207,5 +206,4 @@ public class GeneticAlgorithms {
 		}
 		output.close();
 	}
-	
 }

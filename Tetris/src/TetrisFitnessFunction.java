@@ -8,7 +8,7 @@ import org.jgap.IChromosome;
 public class TetrisFitnessFunction extends FitnessFunction {
 	
 	private static final long serialVersionUID = 1L;
-	private static final int NUMBER_OF_BRICKS = 1000;
+	//private static final int NUMBER_OF_BRICKS = 1000;
 	private static final int NUMBER_OF_ROUNDS = 5;
 	
 	@Override
@@ -37,8 +37,24 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		int moveCount = 0;
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
-		while(moveCount < NUMBER_OF_BRICKS && !s.hasLost()) {
-			s.makeMove(p.pickMove(s,s.legalMoves()));
+		//while(moveCount < NUMBER_OF_BRICKS && !s.hasLost()) {
+		while(!s.hasLost()) {
+			try {
+				s.makeMove(p.pickMove(s,s.legalMoves()));
+			} catch (ArrayIndexOutOfBoundsException e) {
+				//Printing of legalMoves array for debugging use
+		        for (int i = 0; i < s.legalMoves.length; i++)
+		        {
+		            for (int j = 0; j < s.legalMoves[i].length; j++)
+		            {
+		                System.out.print(s.legalMoves[i][j] + " ");
+		            }
+		            System.out.println();
+		        }
+		        
+		        e.printStackTrace();
+			}
+			
 			try {
 				Thread.sleep(0);
 			} catch (InterruptedException e) {
