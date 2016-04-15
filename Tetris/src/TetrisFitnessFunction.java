@@ -19,7 +19,9 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		double b = (double) genes[1].getAllele();
 		double c = (double) genes[2].getAllele();
 		double d = (double) genes[3].getAllele();
-		HeuristicParameters heu = new HeuristicParameters(a, b, c, d);
+		double e = (double) genes[4].getAllele();
+		double f = (double) genes[5].getAllele();
+		HeuristicParameters heu = new HeuristicParameters(a, b, c, d, e, f);
 		
 		for (int i = 0; i < NUMBER_OF_ROUNDS; i++) {
 			try {

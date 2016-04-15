@@ -38,7 +38,8 @@ public class PlayerSkeleton {
 			return Double.NEGATIVE_INFINITY;
 		}
 		return para.a * getAggregateHeights(nextState) + para.b * completedLine 
-				+ para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState);
+				+ para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState) + 
+				para.e * getNumberOfBlockades(nextState) + para.f * getNumberOfEdgesTouchingFloor(nextState);
 	}
 	
 	public State getNextState(State s, int[] legalMove) {
@@ -121,7 +122,7 @@ public class PlayerSkeleton {
 	//This function calculates the number of holes in the field
 	public int getNumberOfHoles(State nextState) {
 		int holes = 0;
-		int[] heights = getHeights(nextState);
+		int[] heights = nextState.getHeights();
 		for (int row = 0; row < State.ROWS; row++) {
 			for (int column = 0; column < State.COLS; column++) {
 				if (nextState.getField()[row][column] == 0 && row < heights[column]) {
@@ -131,37 +132,45 @@ public class PlayerSkeleton {
 		}
 		return holes;
 	}
-		
-	/*public void fillNonHoles(int[][] holes, int row, int column) {
-		if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
-				|| holes[row][column] != 0) {
-			return;
-		} 
-		holes[row][column] = 1;
-		fillNonHoles(holes, row + 1, column);
-		fillNonHoles(holes, row - 1, column);
-		fillNonHoles(holes, row, column + 1);
-		fillNonHoles(holes, row, column - 1);
-	}
 	
-	//This function calculates the number of holes in the field
-	public int getNumberOfHoles() {
-		int holes = 0;
-		
-		int [][] filledArray = new int[ROWS][COLS];
-		for (int i = 0; i < COLS; i++) {
-			fillNonHoles(filledArray, ROWS - 1, i);
+	public int getNumberOfBlockades(State nextState) {
+		int blockades = 0;
+		int[] heights = nextState.getHeights();
+		boolean[] hasHole = new boolean[State.COLS];
+		for (int i = 0 ; i < State.COLS; i++) {
+			hasHole[i] = false;
 		}
 		
-		for (int row = 0; row < ROWS; row++) {
-			for (int column = 0; column < COLS; column++) {
-				if (filledArray[row][column] == 0 && field[row][column] == 0) {
-					holes++;
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (!hasHole[column] && nextState.getField()[row][column] == 0 && row < heights[column]) {
+					hasHole[column] = true;
+				}
+			}	
+		}
+		
+		
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (hasHole[column] && nextState.getField()[row][column] != 0 && row <= heights[column]) {
+					blockades++;
 				}
 			}
 		}
-		return holes;
-	}*/
+		return blockades;
+	}
+	
+	public int getNumberOfEdgesTouchingFloor(State nextState) {
+		int count = 0;
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (nextState.getField()[row][column] != 0 && row == 0) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 	
 	public static int run(HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();

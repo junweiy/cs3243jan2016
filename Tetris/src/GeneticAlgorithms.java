@@ -31,7 +31,7 @@ import org.jgap.impl.FittestPopulationMerger;
 public class GeneticAlgorithms {
 	
 	private static final int POPULATION = 100;  
-	private static final int EVOLVETIME = 10;
+	private static final int EVOLVETIME = 3;
 	private static final int MAXTHREAD = 4;
 
 	static Semaphore mutex = new Semaphore(1);
@@ -45,12 +45,14 @@ public class GeneticAlgorithms {
 		
 		conf.setFitnessFunction(myFunc);
 		
-		Gene[] heuristic = new Gene[4];
+		Gene[] heuristic = new Gene[6];
 		
 		heuristic[0] = new DoubleGene(conf, -1, 0);
 		heuristic[1] = new DoubleGene(conf, 0, 1);
 		heuristic[2] = new DoubleGene(conf, -1, 0);
 		heuristic[3] = new DoubleGene(conf, -1, 0);	
+		heuristic[4] = new DoubleGene(conf, -1, 1);	
+		heuristic[5] = new DoubleGene(conf, -1, 1);	
 		
 		Chromosome heuristics = new Chromosome(conf, heuristic);
 		
@@ -60,17 +62,17 @@ public class GeneticAlgorithms {
 			
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
-		//conf.setPopulationSize(POPULATION * MAXTHREAD);
-		//Genotype initPopulation = Genotype.randomInitialGenotype(conf);
-		//saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
+//		conf.setPopulationSize(POPULATION * MAXTHREAD);
+//		Genotype initPopulation = Genotype.randomInitialGenotype(conf);
+//		saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
 		
 		// Load population from file
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
 		while ((line = br.readLine()) != null) {
 			String hrus[] = line.split(" ");
-			assert(hrus.length == 4);
-			Gene newGen[] = new Gene[4];
+			assert(hrus.length == 5);
+			Gene newGen[] = new Gene[6];
 			newGen[0] = new DoubleGene(conf, -1, 0);
 			newGen[0].setAllele(Double.parseDouble(hrus[0]));
 			newGen[1] = new DoubleGene(conf, 0, 1);
@@ -79,6 +81,10 @@ public class GeneticAlgorithms {
 			newGen[2].setAllele(Double.parseDouble(hrus[2]));
 			newGen[3] = new DoubleGene(conf, -1, 0);
 			newGen[3].setAllele(Double.parseDouble(hrus[3]));
+			newGen[4] = new DoubleGene(conf, -1, 1);
+			newGen[4].setAllele(Double.parseDouble(hrus[4]));
+			newGen[5] = new DoubleGene(conf, -1, 1);
+			newGen[5].setAllele(Double.parseDouble(hrus[5]));
 			Chromosome newChr = new Chromosome(conf, newGen);
 			pop.addChromosome(newChr);
 		}
@@ -98,7 +104,10 @@ public class GeneticAlgorithms {
 		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
 		Population test = mergeEvolvedPopulations(pops2);
 		//System.out.println(test.determineFittestChromosome().getFitnessValue());
-		System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " + test.determineFittestChromosome().getGenes()[1].getAllele() + " " + test.determineFittestChromosome().getGenes()[2].getAllele() + " " + test.determineFittestChromosome().getGenes()[3].getAllele() + ", score: " + test.determineFittestChromosome().getFitnessValue());		
+		System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " + test.determineFittestChromosome().getGenes()[1].getAllele() + 
+				" " + test.determineFittestChromosome().getGenes()[2].getAllele() + " " + test.determineFittestChromosome().getGenes()[3].getAllele() + " " + test.determineFittestChromosome().getGenes()[4].getAllele() 
+				+ " " + test.determineFittestChromosome().getGenes()[5].getAllele() +
+				", score: " + test.determineFittestChromosome().getFitnessValue());		
 		saveToFile(test.determineFittestChromosomes(POPULATION));
 	}
 	

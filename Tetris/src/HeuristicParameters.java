@@ -12,53 +12,27 @@ public class HeuristicParameters  {
 	protected double b;
 	protected double c;
 	protected double d;
+	protected double e;
+	protected double f;
 	
 	public HeuristicParameters() {
 		this.a = 0;
 		this.b = 0;
 		this.c = 0;
 		this.d = 0;
+		this.e = 0;
+		this.f = 0;
 	}
 	
-	public HeuristicParameters(double a, double b, double c, double d) {
+	public HeuristicParameters(double a, double b, double c, double d, double e, double f) {
 		this.a = a;
 		this.b = b;
 		this.c = c;
 		this.d = d;
+		this.e = e;
+		this.f = f;
 	}
 	
-	/**
-	 * Setter to set a value
-	 * @param a the a to set
-	 */
-	public void setA(double a) {
-		this.a = a;
-	}
-
-	/**
-	 * Setter to set b value
-	 * @param b the b to set
-	 */
-	public void setB(double b) {
-		this.b = b;
-	}
-
-	/**
-	 * Setter to set c value
-	 * @param c the c to set
-	 */
-	public void setC(double c) {
-		this.c = c;
-	}
-
-	/**
-	 * Setter to set d value
-	 * @param d the d to set
-	 */
-	public void setD(double d) {
-		this.d = d;
-	}
-
 	
 	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
@@ -69,6 +43,6 @@ public class HeuristicParameters  {
 		assert(tokens.length == 5);
 		br.close();
 		return new HeuristicParameters(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]), 
-				Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]));
+				Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]));
 	}
 }
