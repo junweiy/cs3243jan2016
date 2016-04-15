@@ -47,13 +47,7 @@ public class PlayerSkeleton {
 		return sTemp;
 	}
 	
-	/**
-	 * This function obtains all of the heights of each column so that they may be reused easily for the other
-	 * heuristics functions below.
-	 * 
-	 * @param nextState: The state to determine the column heights from.
-	 * @return: An array of the heights of all of the columns.
-	 */
+	//This function returns the heights of all columns as an array
 	public int[] getHeights(State nextState) {
 		int[] heights = new int[State.COLS];
 		for (int column = 0; column < State.COLS; column++) {
@@ -69,14 +63,8 @@ public class PlayerSkeleton {
 		}
 		return heights;
 	}
-	
-	/**
-	 * This function determines the aggregate heights of the board.
-	 * The aggregate height is determined by getting the height of each row and adding them all together.
-	 * 
-	 * @param nextState: The state to determine the aggregate height against.
-	 * @return: The aggregate height of the next state.
-	 */
+		
+	//This function gets the aggregate heights of each column
 	public int getAggregateHeights(State nextState) {
 		int[] heights = getHeights(nextState);
 		int aggregateHeight = 0;
@@ -86,14 +74,7 @@ public class PlayerSkeleton {
 		return aggregateHeight;
 	}
 		
-	/**
-	 * This function determines the bumpiness of a state.
-	 * The bumpiness of a state is determined by taking the absolute difference of every pair of columns next to
-	 * each other and then adding these differences together. 
-	 * 
-	 * @param nextState: The state that will be tested for a given bumpiness.
-	 * @return The calculated bumpiness of the nextState.
-	 */
+	//This function gets the bumpiness of each column
 	public int getBumpiness(State nextState) {
 		int[] heights = getHeights(nextState);
 		int bumpiness = 0;

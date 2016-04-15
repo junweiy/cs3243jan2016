@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 public class HeuristicParameters  {
 	// Four constant parameters
@@ -10,9 +13,6 @@ public class HeuristicParameters  {
 	protected double c;
 	protected double d;
 	
-	/**
-	 * The default constructor for the heuristic parameter. All coefficients are originally assigned to 0.
-	 */
 	public HeuristicParameters() {
 		this.a = 0;
 		this.b = 0;
@@ -20,13 +20,6 @@ public class HeuristicParameters  {
 		this.d = 0;
 	}
 	
-	/**
-	 * Constructing a heurstic parameter with the given a, b, c, and d coefficients.
-	 * @param a: The coefficient assigned to the aggregate height heuristic.
-	 * @param b: The coefficient assigned to the complete lines heuristic.
-	 * @param c: The coefficient assigned to the holes heuristic.
-	 * @param d: The coefficient assigned to the bumpiness heuristic.
-	 */
 	public HeuristicParameters(double a, double b, double c, double d) {
 		this.a = a;
 		this.b = b;
@@ -69,9 +62,9 @@ public class HeuristicParameters  {
 	/**
 	 * This function reads from the given heuristic.txt and then loads the given heuristic function into a new HeuristicParameter constructor.
 	 * 
-	 * @return: The new heuristic parameter as read from the the text file. 
-	 * @throws FileNotFoundException: If the heuristic.txt file is unable to be found.
-	 * @throws IOException: If the heuristic.txt file is unable to be parsed correctly.
+	 * @return: The new heuristic parameter as read from the 
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
 	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));

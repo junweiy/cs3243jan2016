@@ -12,20 +12,4 @@
 		<list key="textEntries">
 		</list>
 	</section>
-<<<<<<< HEAD
-	<section name="ImportExportAction">
-=======
-	<section name="WorkbenchPreferenceDialogSettings">
-		<item value="138" key="DIALOG_Y_ORIGIN"/>
-		<item value="568" key="DIALOG_X_ORIGIN"/>
-	</section>
-	<section name="ImportExportAction">
-		<item value="org.eclipse.ui.wizards.import.ExternalProject" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>
-		<list key="ImportExportPage.STORE_EXPANDED_IMPORT_CATEGORIES">
-			<item value="org.eclipse.ui.Basic"/>
-			<item value="org.eclipse.equinox.p2.category"/>
-			<item value="org.eclipse.m2e"/>
-		</list>
->>>>>>> 4e79f1b73a96cc93afa0034e8717d4e908eee64e
-	</section>
 </section>

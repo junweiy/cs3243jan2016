@@ -108,7 +108,11 @@ public class TFrame extends JFrame implements KeyListener{
 			default:
 				System.out.println("unknown mode");
 				break;
-		}	
+		}
+		
+		
+		
+		
 	}
 
 
@@ -117,6 +121,7 @@ public class TFrame extends JFrame implements KeyListener{
 
 
 	public void keyTyped(KeyEvent e) {
+
 	}
 	
     public void save(String filename) {

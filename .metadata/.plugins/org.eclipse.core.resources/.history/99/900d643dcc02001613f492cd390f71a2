@@ -54,6 +54,7 @@ public class PlayerSkeleton {
 	 * @param nextState: The state to determine the column heights from.
 	 * @return: An array of the heights of all of the columns.
 	 */
+	//This function returns the heights of all columns as an array
 	public int[] getHeights(State nextState) {
 		int[] heights = new int[State.COLS];
 		for (int column = 0; column < State.COLS; column++) {
