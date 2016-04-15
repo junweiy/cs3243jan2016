@@ -169,7 +169,7 @@ public class State {
 	}
 	
 	//This function returns the heights of all columns as an array
-	public int[] getHeights() {
+	/*public int[] getHeights() {
 		int[] heights = new int[COLS];
 		for (int column = 0; column < COLS; column++) {
 			int row = ROWS - 1;
@@ -219,38 +219,8 @@ public class State {
 		}
 		return completeLines;
 	}
-	
-//	public void fillNonHoles(int[][] holes, int row, int column) {
-//		if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
-//				|| holes[row][column] != 0) {
-//			return;
-//		} 
-//		holes[row][column] = 1;
-//		fillNonHoles(holes, row + 1, column);
-//		fillNonHoles(holes, row - 1, column);
-//		fillNonHoles(holes, row, column + 1);
-//		fillNonHoles(holes, row, column - 1);
-//	}
-	
-//	//This function calculates the number of holes in the field
-//	public int getNumberOfHoles() {
-//		int holes = 0;
-//		
-//		int [][] filledArray = new int[ROWS][COLS];
-//		for (int i = 0; i < COLS; i++) {
-//			fillNonHoles(filledArray, ROWS - 1, i);
-//		}
-//		
-//		for (int row = 0; row < ROWS; row++) {
-//			for (int column = 0; column < COLS; column++) {
-//				if (filledArray[row][column] == 0 && field[row][column] == 0) {
-//					holes++;
-//				}
-//			}
-//		}
-//		return holes;
-//	}
-	
+
+	//This function calculates the number of holes in the field
 	public int getNumberOfHoles() {
 		int holes = 0;
 		int[] heights = getHeights();
@@ -262,7 +232,38 @@ public class State {
 			}
 		}
 		return holes;
+	}*/
+	
+	/*public void fillNonHoles(int[][] holes, int row, int column) {
+		if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
+				|| holes[row][column] != 0) {
+			return;
+		} 
+		holes[row][column] = 1;
+		fillNonHoles(holes, row + 1, column);
+		fillNonHoles(holes, row - 1, column);
+		fillNonHoles(holes, row, column + 1);
+		fillNonHoles(holes, row, column - 1);
 	}
+	
+	//This function calculates the number of holes in the field
+	public int getNumberOfHoles() {
+		int holes = 0;
+		
+		int [][] filledArray = new int[ROWS][COLS];
+		for (int i = 0; i < COLS; i++) {
+			fillNonHoles(filledArray, ROWS - 1, i);
+		}
+		
+		for (int row = 0; row < ROWS; row++) {
+			for (int column = 0; column < COLS; column++) {
+				if (filledArray[row][column] == 0 && field[row][column] == 0) {
+					holes++;
+				}
+			}
+		}
+		return holes;
+	}*/
 	
 	//constructor
 	public State() {

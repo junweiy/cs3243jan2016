@@ -31,7 +31,7 @@ import org.jgap.impl.FittestPopulationMerger;
 public class GeneticAlgorithms {
 	
 	private static final int POPULATION = 100;  
-	private static final int EVOLVETIME = 2;
+	private static final int EVOLVETIME = 10;
 	private static final int MAXTHREAD = 4;
 
 	static Semaphore mutex = new Semaphore(1);
@@ -104,7 +104,7 @@ public class GeneticAlgorithms {
 	
 	public static Population mergeEvolvedPopulations(Population[] pops){
 		Population mergedPops= null;
-
+		
 		IPopulationMerger merger = new FittestPopulationMerger();
 		mergedPops = merger.mergePopulations(pops[0], pops[1], POPULATION * 2);
 

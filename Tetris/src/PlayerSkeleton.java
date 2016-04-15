@@ -3,7 +3,6 @@ import java.io.IOException;
 
 public class PlayerSkeleton {
 	
-	
 	HeuristicParameters para = new HeuristicParameters();
 	
 	public PlayerSkeleton(HeuristicParameters hp) {
@@ -38,15 +37,131 @@ public class PlayerSkeleton {
 		if (nextState.hasLost()) {
 			return Double.NEGATIVE_INFINITY;
 		}
-		return para.a * nextState.getAggregateHeights() + para.b * completedLine 
-				+ para.c * nextState.getNumberOfHoles() + para.d * nextState.getBumpiness();
+		return para.a * getAggregateHeights(nextState) + para.b * completedLine 
+				+ para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState);
 	}
 	
 	public State getNextState(State s, int[] legalMove) {
-		State sTemp = s.copy();
+		State sTemp = s.copy(); //copy(s);
 		sTemp.makeMove(legalMove);
 		return sTemp;
 	}
+	
+	// Get a deep copy of a state
+	/*public State copy(State s) {
+		State newState = new State();
+		newState.lost = s.lost;
+		newState.label = s.label;
+		newState.turn = s.getTurnNumber();
+		newState.cleared = s.getRowsCleared();
+		for (int i = 0; i < State.ROWS;i++) {
+			for (int j = 0; j < State.COLS; j++) {
+				newState.getField()[i][j] = s.getField()[i][j];
+			}
+		}
+		for (int i = 0; i < State.COLS; i++) {
+			newState.top[i] = s.getTop()[i];
+		}
+		newState.nextPiece = s.nextPiece;
+		return newState;
+	}*/
+	
+	//This function returns the heights of all columns as an array
+	public int[] getHeights(State nextState) {
+		int[] heights = new int[State.COLS];
+		for (int column = 0; column < State.COLS; column++) {
+			int row = State.ROWS - 1;
+			while (row >= 0 && nextState.getField()[row][column] == 0) {
+				row--;
+			}
+			if (row != -1) {
+				heights[column] = row + 1;
+			} else {
+				heights[column] = 0;
+			}
+		}
+		return heights;
+	}
+		
+	//This function gets the aggregate heights of each column
+	public int getAggregateHeights(State nextState) {
+		int[] heights = getHeights(nextState);
+		int aggregateHeight = 0;
+		for (int height : heights) {
+			aggregateHeight += height;
+		}
+		return aggregateHeight;
+	}
+		
+	//This function gets the bumpiness of each column
+	public int getBumpiness(State nextState) {
+		int[] heights = getHeights(nextState);
+		int bumpiness = 0;
+		for (int column = 0; column < State.COLS - 1; column++) {
+			bumpiness += Math.abs(heights[column] - heights[column + 1]);
+		}
+		return bumpiness;
+	}
+		
+	//This function returns the number of complete lines in the field
+	public int getNumberOfCompleteLines(State nextState) {
+		int completeLines = 0;
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (nextState.getField()[row][column] == 0) {
+					break;
+				} else if (column == State.COLS - 1) {
+					completeLines++;
+				}
+			}
+		}
+		return completeLines;
+	}
+
+	//This function calculates the number of holes in the field
+	public int getNumberOfHoles(State nextState) {
+		int holes = 0;
+		int[] heights = getHeights(nextState);
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (nextState.getField()[row][column] == 0 && row < heights[column]) {
+					holes++;
+				}
+			}
+		}
+		return holes;
+	}
+		
+	/*public void fillNonHoles(int[][] holes, int row, int column) {
+		if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
+				|| holes[row][column] != 0) {
+			return;
+		} 
+		holes[row][column] = 1;
+		fillNonHoles(holes, row + 1, column);
+		fillNonHoles(holes, row - 1, column);
+		fillNonHoles(holes, row, column + 1);
+		fillNonHoles(holes, row, column - 1);
+	}
+	
+	//This function calculates the number of holes in the field
+	public int getNumberOfHoles() {
+		int holes = 0;
+		
+		int [][] filledArray = new int[ROWS][COLS];
+		for (int i = 0; i < COLS; i++) {
+			fillNonHoles(filledArray, ROWS - 1, i);
+		}
+		
+		for (int row = 0; row < ROWS; row++) {
+			for (int column = 0; column < COLS; column++) {
+				if (filledArray[row][column] == 0 && field[row][column] == 0) {
+					holes++;
+				}
+			}
+		}
+		return holes;
+	}*/
 	
 	public static int run(HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();
