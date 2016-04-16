@@ -33,7 +33,6 @@ public class GeneticAlgorithms {
 	//Setting the final values for which the genetic algorithm will be tested against.
 	private static final int POPULATION = 100;  
 	//The number of threads that the program will be run on simultaneously: this will aid in testing larger populations.
-
 	private static final int EVOLVETIME = 3;
 	private static final int MAXTHREAD = 4;
 

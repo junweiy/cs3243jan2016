@@ -1,11 +1,11 @@
-import java.io.BufferedReader;
+/*import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
-public class HeuristicParameters  {
+*/
+//public class HeuristicParameters  {
 	// Four constant parameters
-	protected double a;
+	/*protected double a;
 	protected double b;
 	protected double c;
 	protected double d;
@@ -15,14 +15,14 @@ public class HeuristicParameters  {
 	/**
 	 * The default constructor for the heuristic parameter. All coefficients are originally assigned to 0.
 	 */
-	public HeuristicParameters() {
+	/*public HeuristicParameters() {
 		this.a = 0;
 		this.b = 0;
 		this.c = 0;
 		this.d = 0;
 		this.e = 0;
 		this.f = 0;
-	}
+	}*/
 	
 	/**
 	 * Constructing a heurstic parameter with the given a, b, c, and d coefficients.
@@ -33,45 +33,45 @@ public class HeuristicParameters  {
 	 * @param e:
 	 * @param f:
 	 */
-	public HeuristicParameters(double a, double b, double c, double d, double e, double f) {
+	/*public HeuristicParameters(double a, double b, double c, double d, double e, double f) {
 		this.a = a;
 		this.b = b;
 		this.c = c;
 		this.d = d;
 		this.e = e;
 		this.f = f;
-	}
+	}*/
 	/**
 	 * Setter to set a value
 	 * @param a the a to set
 	 */
-	public void setA(double a) {
+	/*public void setA(double a) {
 		this.a = a;
-	}
+	}*/
 
 	/**
 	 * Setter to set b value
 	 * @param b the b to set
 	 */
-	public void setB(double b) {
+	/*public void setB(double b) {
 		this.b = b;
-	}
+	}*/
 
 	/**
 	 * Setter to set c value
 	 * @param c the c to set
 	 */
-	public void setC(double c) {
+	/*public void setC(double c) {
 		this.c = c;
-	}
+	}*/
 
 	/**
 	 * Setter to set d value
 	 * @param d the d to set
 	 */
-	public void setD(double d) {
+	/*public void setD(double d) {
 		this.d = d;
-	}
+	}*/
 
 	/**
 	 * This function reads from the given heuristic.txt and then loads the given heuristic function into a new HeuristicParameter constructor.
@@ -80,7 +80,7 @@ public class HeuristicParameters  {
 	 * @throws FileNotFoundException: If the heuristic.txt file is unable to be found.
 	 * @throws IOException: If the heuristic.txt file is unable to be parsed correctly.
 	 */
-	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
+	/*public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
 		line = br.readLine();
@@ -90,5 +90,5 @@ public class HeuristicParameters  {
 		br.close();
 		return new HeuristicParameters(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]), 
 				Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]));
-	}
-}
+	}*/
+//}

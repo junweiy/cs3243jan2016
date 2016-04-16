@@ -4,9 +4,7 @@ public class State {
 	public static final int COLS = 10;
 	public static final int ROWS = 21;
 	public static final int N_PIECES = 7;
-
 	
-
 	public boolean lost = false;
 	
 	public TLabel label;
@@ -21,11 +19,8 @@ public class State {
 	//0 means empty
 	private int[] top = new int[COLS];
 	
-	
 	//number of next piece
 	protected int nextPiece;
-	
-	
 	
 	//all legal moves - first index is piece type - then a list of 2-length arrays
 	protected static int[][][] legalMoves = new int[N_PIECES][][];
@@ -122,11 +117,10 @@ public class State {
 		return newState;
 	}
 	
-	
 	public int[][] getField() {
 		return field;
 	}
-
+	
 	public int[] getTop() {
 		return top;
 	}
@@ -167,9 +161,6 @@ public class State {
 	public int getTurnNumber() {
 		return turn;
 	}
-<<<<<<< HEAD
-
-=======
 	
 	//This function returns the heights of all columns as an array
 	public int[] getHeights() {
@@ -222,8 +213,6 @@ public class State {
 		}
 		return completeLines;
 	}
-	
-	
 	
 	//This function calculates the number of holes in the field
 	public int getNumberOfHoles() {
@@ -278,7 +267,6 @@ public class State {
 		return count;
 	}
 	
->>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 	//constructor
 	public State() {
 		nextPiece = randomPiece();
@@ -289,9 +277,6 @@ public class State {
 	private int randomPiece() {
 		return (int)(Math.random()*N_PIECES);
 	}
-	
-
-
 	
 	//gives legal moves for 
 	public int[][] legalMoves() {
@@ -369,11 +354,8 @@ public class State {
 			}
 		}
 	
-
 		//pick a new piece
 		nextPiece = randomPiece();
-		
-
 		
 		return true;
 	}
@@ -431,10 +413,6 @@ public class State {
 		label.line(0, 0, 0, ROWS+5);
 		label.line(COLS, 0, COLS, ROWS+5);
 	}
-	
-
-	
-
 }
 
 

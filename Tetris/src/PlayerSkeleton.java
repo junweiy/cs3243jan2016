@@ -1,7 +1,99 @@
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class PlayerSkeleton {
+	
+	public static class HeuristicParameters  {
+		// Four constant parameters
+		protected double a;
+		protected double b;
+		protected double c;
+		protected double d;
+		protected double e;
+		protected double f;
+		
+		/**
+		 * The default constructor for the heuristic parameter. All coefficients are originally assigned to 0.
+		 */
+		public HeuristicParameters() {
+			this.a = 0;
+			this.b = 0;
+			this.c = 0;
+			this.d = 0;
+			this.e = 0;
+			this.f = 0;
+		}
+		
+		/**
+		 * Constructing a heurstic parameter with the given a, b, c, and d coefficients.
+		 * @param a: The coefficient assigned to the aggregate height heuristic.
+		 * @param b: The coefficient assigned to the complete lines heuristic.
+		 * @param c: The coefficient assigned to the holes heuristic.
+		 * @param d: The coefficient assigned to the bumpiness heuristic.
+		 * @param e:
+		 * @param f:
+		 */
+		public HeuristicParameters(double a, double b, double c, double d, double e, double f) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+			this.d = d;
+			this.e = e;
+			this.f = f;
+		}
+		
+		/**
+		 * Setter to set a value
+		 * @param a the a to set
+		 */
+		public void setA(double a) {
+			this.a = a;
+		}
+
+		/**
+		 * Setter to set b value
+		 * @param b the b to set
+		 */
+		public void setB(double b) {
+			this.b = b;
+		}
+
+		/**
+		 * Setter to set c value
+		 * @param c the c to set
+		 */
+		public void setC(double c) {
+			this.c = c;
+		}
+
+		/**
+		 * Setter to set d value
+		 * @param d the d to set
+		 */
+		public void setD(double d) {
+			this.d = d;
+		}
+		
+		/**
+		 * This function reads from the given heuristic.txt and then loads the given heuristic function into a new HeuristicParameter constructor.
+		 * 
+		 * @return: The new heuristic parameter as read from the the text file. 
+		 * @throws FileNotFoundException: If the heuristic.txt file is unable to be found.
+		 * @throws IOException: If the heuristic.txt file is unable to be parsed correctly.
+		 */
+		public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
+			BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
+			String line;
+			line = br.readLine();
+			assert(line!=null);
+			String tokens[] = line.split(" ");
+			assert(tokens.length == 5);
+			br.close();
+			return new HeuristicParameters(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]), Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]));
+		}
+	}
 	
 	HeuristicParameters para = new HeuristicParameters();
 	
@@ -13,7 +105,7 @@ public class PlayerSkeleton {
 	public int pickMove(State s, int[][] legalMoves) {
 		double maxScore = Integer.MIN_VALUE;
 		int maxIndex = 0;
-		for (int i = 0; i < legalMoves.length; i ++) {
+		for (int i = 0; i < legalMoves.length; i++) {
 			State nextState = getNextState(s, legalMoves[i]);
 			double score = getScore(s, nextState, para);
 			if (score > maxScore) {
@@ -41,9 +133,9 @@ public class PlayerSkeleton {
 				+ para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState) + 
 				para.e * getNumberOfBlockades(nextState) + para.f * getNumberOfEdgesTouchingFloor(nextState);
 	}
-	
+		
 	public State getNextState(State s, int[] legalMove) {
-		State sTemp = s.copy(); //copy(s);
+		State sTemp = s.copy();
 		sTemp.makeMove(legalMove);
 		return sTemp;
 	}
@@ -212,12 +304,10 @@ public class PlayerSkeleton {
 		System.out.println("You have completed "+s.getRowsCleared()+" rows.");
 		return s.getRowsCleared();
 	}
-
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		HeuristicParameters hp = HeuristicParameters.loadFirstHeuristicParameters();
 		System.out.println("a, b, c, d: " + hp.a + " " + hp.b + " "+ hp.c + " "+ hp.d);
 		run(hp);
 	}
-	
 }

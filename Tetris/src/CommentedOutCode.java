@@ -7,8 +7,6 @@
  */
 public class CommentedOutCode {
 	
-	
-	
 /*public void fillNonHoles(int[][] holes, int row, int column) {
 	if (row >= ROWS || column >= COLS || row < 0 || column < 0 || field[row][column] != 0
 			|| holes[row][column] != 0) {

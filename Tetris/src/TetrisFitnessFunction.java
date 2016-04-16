@@ -23,7 +23,7 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		double d = (double) genes[3].getAllele();
 		double e = (double) genes[4].getAllele();
 		double f = (double) genes[5].getAllele();
-		HeuristicParameters heu = new HeuristicParameters(a, b, c, d, e, f);
+		PlayerSkeleton.HeuristicParameters heu = new PlayerSkeleton.HeuristicParameters(a, b, c, d, e, f);
 		for (int i = 0; i < NUMBER_OF_ROUNDS; i++) {
 			try {
 				totalScore += getScore(heu);
@@ -41,12 +41,24 @@ public class TetrisFitnessFunction extends FitnessFunction {
 	 * @throws FileNotFoundException: If the file is unable to be found from the thread.
 	 * @throws IOException: If the file is unable to be parsed from the thread. 
 	 */
-	public static int getScore(HeuristicParameters hp) throws FileNotFoundException, IOException {
+	public static int getScore(PlayerSkeleton.HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
 		while(!s.hasLost()) {
-			s.makeMove(p.pickMove(s,s.legalMoves()));
+			//s.makeMove(p.pickMove(s,s.legalMoves()));
+			try {
+				s.makeMove(p.pickMove(s,s.legalMoves()));
+			} catch (ArrayIndexOutOfBoundsException e) {
+				//Printing of legalMoves array for debugging use
+			    for (int i = 0; i < s.legalMoves.length; i++) {
+			        for (int j = 0; j < s.legalMoves[i].length; j++) {
+			            System.out.print(s.legalMoves[i][j] + " ");
+			        }
+			        System.out.println();
+			    }
+			    e.printStackTrace();
+			}
 			try {
 				Thread.sleep(0);
 			} catch (InterruptedException e) {
