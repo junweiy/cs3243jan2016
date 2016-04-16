@@ -80,8 +80,6 @@ public class PlayerSkeleton {
 			this.nextPiece = nextPiece;
 		}
 		
-	
-		
 		//possible orientations for a given piece type
 		protected int[] pOrients = {1,2,4,4,4,2,2};
 		
@@ -150,112 +148,6 @@ public class PlayerSkeleton {
 			}
 		
 		}
-	
-		
-		//This function returns the heights of all columns as an array
-		public int[] getHeights() {
-			int[] heights = new int[COLS];
-			for (int column = 0; column < COLS; column++) {
-				int row = ROWS - 1;
-				while (row >= 0 && field[row][column] == 0) {
-					row--;
-				}
-				if (row != -1) {
-					heights[column] = row + 1;
-				} else {
-					heights[column] = 0;
-				}
-			}
-			return heights;
-		}
-		
-		//This function gets the aggregate heights of each column
-		public int getAggregateHeights() {
-			int[] heights = getHeights();
-			int aggregateHeight = 0;
-			for (int height : heights) {
-				aggregateHeight += height;
-			}
-			return aggregateHeight;
-		}
-		
-		//This function gets the bumpiness of each column
-		public int getBumpiness() {
-			int[] heights = getHeights();
-			int bumpiness = 0;
-			for (int column = 0; column < COLS - 1; column++) {
-				bumpiness += Math.abs(heights[column] - heights[column + 1]);
-			}
-			return bumpiness;
-		}
-		
-		//This function returns the number of complete lines in the field
-		public int getNumberOfCompleteLines() {
-			int completeLines = 0;
-			for (int row = 0; row < ROWS; row++) {
-				for (int column = 0; column < COLS; column++) {
-					if (field[row][column] == 0) {
-						break;
-					} else if (column == COLS - 1) {
-						completeLines++;
-					}
-				}
-			}
-			return completeLines;
-		}
-		
-		//This function calculates the number of holes in the field
-		public int getNumberOfHoles() {
-			int holes = 0;
-			int[] heights = getHeights();
-			for (int row = 0; row < State.ROWS; row++) {
-				for (int column = 0; column < State.COLS; column++) {
-					if (getField()[row][column] == 0 && row < heights[column]) {
-						holes++;
-					}
-				}
-			}
-			return holes;
-		}
-		
-		public int getNumberOfBlockades() {
-			int blockades = 0;
-			int[] heights = getHeights();
-			boolean[] hasHole = new boolean[State.COLS];
-			for (int i = 0 ; i < State.COLS; i++) {
-				hasHole[i] = false;
-			}
-			
-			for (int row = 0; row < State.ROWS; row++) {
-				for (int column = 0; column < State.COLS; column++) {
-					if (!hasHole[column] && getField()[row][column] == 0 && row < heights[column]) {
-						hasHole[column] = true;
-					}
-				}	
-			}
-			
-			
-			for (int row = 0; row < State.ROWS; row++) {
-				for (int column = 0; column < State.COLS; column++) {
-					if (hasHole[column] && getField()[row][column] != 0 && row <= heights[column]) {
-						blockades++;
-					}
-				}
-			}
-			return blockades;
-		}
-		
-		public int getNumberOfEdgesTouchingFloor() {
-			int count = 0;
-			for (int row = 0; row < State.ROWS; row++) {
-				for (int column = 0; column < State.COLS; column++) {
-					if (getField()[row][column] != 0 && row == 0) {
-						count++;
-					}
-				}
-			}
-			return count;
-		}
 		
 		//random integer, returns 0-6
 		private int randomPiece() {
@@ -292,7 +184,6 @@ public class PlayerSkeleton {
 				lost = true;
 				return false;
 			}
-
 			
 			//for each column in the piece - fill in the appropriate blocks
 			for(int i = 0; i < pWidth[nextPiece][orient]; i++) {
@@ -423,6 +314,14 @@ public class PlayerSkeleton {
 		public void setD(double d) {
 			this.d = d;
 		}
+
+		public void setE(double e) {
+			this.e = e;
+		}
+
+		public void setF(double f) {
+			this.f = f;
+		}
 		
 		/**
 		 * This function reads from the given heuristic.txt and then loads the given heuristic function into a new HeuristicParameter constructor.
@@ -477,17 +376,12 @@ public class PlayerSkeleton {
 		if (nextState.hasLost()) {
 			return Double.NEGATIVE_INFINITY;
 		}
-		return para.a * getAggregateHeights(nextState) + para.b * completedLine 
-				+ para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState) + 
-				para.e * getNumberOfBlockades(nextState) + para.f * getNumberOfEdgesTouchingFloor(nextState);
+		return para.a * getAggregateHeights(nextState) + para.b * completedLine + para.c * getNumberOfHoles(nextState) + para.d * getBumpiness(nextState) + para.e * getNumberOfBlockades(nextState) + para.f * getNumberOfEdgesTouchingFloor(nextState);
 	}
 		
 	public State getNextState(State s, int[] legalMove) {
 		TempState sTemp = new TempState();
 		sTemp = copy(s);
-		//Comment out the two lines above and uncomment the line below, it will work
-		//State sTemp = s.copy();
-		
 		sTemp.makeMove(legalMove);
 		return sTemp;
 	}
@@ -649,7 +543,6 @@ public class PlayerSkeleton {
 		}
 		return count;
 	}
-
 	
 	public static int run(HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();
@@ -672,7 +565,7 @@ public class PlayerSkeleton {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		HeuristicParameters hp = HeuristicParameters.loadFirstHeuristicParameters();
-		System.out.println("a, b, c, d: " + hp.a + " " + hp.b + " "+ hp.c + " "+ hp.d);
+		System.out.println("a, b, c, d, e, f: " + hp.a + " " + hp.b + " "+ hp.c + " "+ hp.d + " " + hp.e + " " + hp.f);
 		run(hp);
 	}
 }

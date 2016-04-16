@@ -176,11 +176,10 @@ public int getNumberOfHoles() {
 				System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " + population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + " " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
 				saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
 			}*/
-		
+	
+	//Comment out the two lines above and uncomment the line below, it will work
+	//State sTemp = s.copy();
 }
-
-
-
 
 //public int pickMove(State s, int[][] legalMoves, double[] weightFactors) {
 //
