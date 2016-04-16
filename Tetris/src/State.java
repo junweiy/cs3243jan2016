@@ -167,7 +167,118 @@ public class State {
 	public int getTurnNumber() {
 		return turn;
 	}
+<<<<<<< HEAD
 
+=======
+	
+	//This function returns the heights of all columns as an array
+	public int[] getHeights() {
+		int[] heights = new int[COLS];
+		for (int column = 0; column < COLS; column++) {
+			int row = ROWS - 1;
+			while (row >= 0 && field[row][column] == 0) {
+				row--;
+			}
+			if (row != -1) {
+				heights[column] = row + 1;
+			} else {
+				heights[column] = 0;
+			}
+		}
+		return heights;
+	}
+	
+	//This function gets the aggregate heights of each column
+	public int getAggregateHeights() {
+		int[] heights = getHeights();
+		int aggregateHeight = 0;
+		for (int height : heights) {
+			aggregateHeight += height;
+		}
+		return aggregateHeight;
+	}
+	
+	//This function gets the bumpiness of each column
+	public int getBumpiness() {
+		int[] heights = getHeights();
+		int bumpiness = 0;
+		for (int column = 0; column < COLS - 1; column++) {
+			bumpiness += Math.abs(heights[column] - heights[column + 1]);
+		}
+		return bumpiness;
+	}
+	
+	//This function returns the number of complete lines in the field
+	public int getNumberOfCompleteLines() {
+		int completeLines = 0;
+		for (int row = 0; row < ROWS; row++) {
+			for (int column = 0; column < COLS; column++) {
+				if (field[row][column] == 0) {
+					break;
+				} else if (column == COLS - 1) {
+					completeLines++;
+				}
+			}
+		}
+		return completeLines;
+	}
+	
+	
+	
+	//This function calculates the number of holes in the field
+	public int getNumberOfHoles() {
+		int holes = 0;
+		int[] heights = getHeights();
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (getField()[row][column] == 0 && row < heights[column]) {
+					holes++;
+				}
+			}
+		}
+		return holes;
+	}
+	
+	public int getNumberOfBlockades() {
+		int blockades = 0;
+		int[] heights = getHeights();
+		boolean[] hasHole = new boolean[State.COLS];
+		for (int i = 0 ; i < State.COLS; i++) {
+			hasHole[i] = false;
+		}
+		
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (!hasHole[column] && getField()[row][column] == 0 && row < heights[column]) {
+					hasHole[column] = true;
+				}
+			}	
+		}
+		
+		
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (hasHole[column] && getField()[row][column] != 0 && row <= heights[column]) {
+					blockades++;
+				}
+			}
+		}
+		return blockades;
+	}
+	
+	public int getNumberOfEdgesTouchingFloor() {
+		int count = 0;
+		for (int row = 0; row < State.ROWS; row++) {
+			for (int column = 0; column < State.COLS; column++) {
+				if (getField()[row][column] != 0 && row == 0) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 	//constructor
 	public State() {
 		nextPiece = randomPiece();

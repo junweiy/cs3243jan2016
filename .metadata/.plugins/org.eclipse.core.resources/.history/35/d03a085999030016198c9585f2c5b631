@@ -24,16 +24,18 @@ public class HeuristicParameters  {
 		this.f = 0;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Constructing a heurstic parameter with the given a, b, c, and d coefficients.
 	 * @param a: The coefficient assigned to the aggregate height heuristic.
 	 * @param b: The coefficient assigned to the complete lines heuristic.
 	 * @param c: The coefficient assigned to the holes heuristic.
 	 * @param d: The coefficient assigned to the bumpiness heuristic.
-	 * @param e:
-	 * @param f:
 	 */
+	public HeuristicParameters(double a, double b, double c, double d) {
+=======
 	public HeuristicParameters(double a, double b, double c, double d, double e, double f) {
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 		this.a = a;
 		this.b = b;
 		this.c = c;
@@ -41,6 +43,8 @@ public class HeuristicParameters  {
 		this.e = e;
 		this.f = f;
 	}
+	
+<<<<<<< HEAD
 	/**
 	 * Setter to set a value
 	 * @param a the a to set
@@ -80,6 +84,9 @@ public class HeuristicParameters  {
 	 * @throws FileNotFoundException: If the heuristic.txt file is unable to be found.
 	 * @throws IOException: If the heuristic.txt file is unable to be parsed correctly.
 	 */
+=======
+	
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;

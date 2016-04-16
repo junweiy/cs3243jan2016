@@ -32,9 +32,13 @@ public class GeneticAlgorithms {
 	
 	//Setting the final values for which the genetic algorithm will be tested against.
 	private static final int POPULATION = 100;  
+<<<<<<< HEAD
+	private static final int EVOLVETIME = 10;
+	
 	//The number of threads that the program will be run on simultaneously: this will aid in testing larger populations.
-
+=======
 	private static final int EVOLVETIME = 3;
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 	private static final int MAXTHREAD = 4;
 
 	//To account for large populations, semaphores are used to achieve multi-threading.
@@ -48,29 +52,42 @@ public class GeneticAlgorithms {
 		SimplePopulationSplitter splitter = new SimplePopulationSplitter(MAXTHREAD);
 		conf.setFitnessFunction(myFunc);
 		
+<<<<<<< HEAD
 		//Chromosomes and genes are generated according to the JGAP library specifications.
+		Gene[] heuristic = new Gene[4];
+=======
 		Gene[] heuristic = new Gene[6];
 		
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 		heuristic[0] = new DoubleGene(conf, -1, 0);
 		heuristic[1] = new DoubleGene(conf, 0, 1);
 		heuristic[2] = new DoubleGene(conf, -1, 0);
 		heuristic[3] = new DoubleGene(conf, -1, 0);	
+<<<<<<< HEAD
+=======
 		heuristic[4] = new DoubleGene(conf, -1, 1);	
 		heuristic[5] = new DoubleGene(conf, -1, 1);	
 		
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 		Chromosome heuristics = new Chromosome(conf, heuristic);
 		conf.setSampleChromosome(heuristics);
 		Population pop = new Population(conf);
 			
 		// For the first time write heuristics to text file
 		// Uncommented if it is for the first time
+<<<<<<< HEAD
 
 		/*
 		conf.setPopulationSize(POPULATION * MAXTHREAD);
 		Genotype initPopulation = Genotype.randomInitialGenotype(conf);
 		saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
 		*/
-
+=======
+//		conf.setPopulationSize(POPULATION * MAXTHREAD);
+//		Genotype initPopulation = Genotype.randomInitialGenotype(conf);
+//		saveToFile(initPopulation.getPopulation().determineFittestChromosomes(POPULATION));
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
+		
 		// The population is read from the given heuristic.txt file, and then parsed in order to construct the chromosome and genes correctly. 
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
@@ -100,12 +117,17 @@ public class GeneticAlgorithms {
 		//To achieve multithreading
 		Population[] pops2=multiThreadedEvolve(pops, heuristics, myFunc);
 		Population test = mergeEvolvedPopulations(pops2);
+<<<<<<< HEAD
 		
 		//Once the best solution has been determined, it is printed and saved to a file for future use. 
+		System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " + test.determineFittestChromosome().getGenes()[1].getAllele() + " " + test.determineFittestChromosome().getGenes()[2].getAllele() + " " + test.determineFittestChromosome().getGenes()[3].getAllele() + ", score: " + test.determineFittestChromosome().getFitnessValue());		
+=======
+		//System.out.println(test.determineFittestChromosome().getFitnessValue());
 		System.out.println("Best solution so far: " + test.determineFittestChromosome().getGenes()[0].getAllele() + " " + test.determineFittestChromosome().getGenes()[1].getAllele() + 
 				" " + test.determineFittestChromosome().getGenes()[2].getAllele() + " " + test.determineFittestChromosome().getGenes()[3].getAllele() + " " + test.determineFittestChromosome().getGenes()[4].getAllele() 
 				+ " " + test.determineFittestChromosome().getGenes()[5].getAllele() +
 				", score: " + test.determineFittestChromosome().getFitnessValue());		
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 		saveToFile(test.determineFittestChromosomes(POPULATION));
 	}
 	

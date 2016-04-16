@@ -145,12 +145,7 @@ public class PlayerSkeleton {
 		return holes;
 	}
 
-	/**
-	 * This function determines the number of blockades, which is defined as the number of blocks directly above a hole. This number should be minimised.
-	 * 
-	 * @param nextState: The state against which this function will be tested.
-	 * @return: The number of blockades.
-	 */
+	
 	public int getNumberOfBlockades(State nextState) {
 		int blockades = 0;
 		int[] heights = getHeights(nextState);
@@ -158,6 +153,7 @@ public class PlayerSkeleton {
 		for (int i = 0 ; i < State.COLS; i++) {
 			hasHole[i] = false;
 		}
+		
 		for (int row = 0; row < State.ROWS; row++) {
 			for (int column = 0; column < State.COLS; column++) {
 				if (!hasHole[column] && nextState.getField()[row][column] == 0 && row < heights[column]) {
@@ -165,6 +161,8 @@ public class PlayerSkeleton {
 				}
 			}	
 		}
+		
+		
 		for (int row = 0; row < State.ROWS; row++) {
 			for (int column = 0; column < State.COLS; column++) {
 				if (hasHole[column] && nextState.getField()[row][column] != 0 && row <= heights[column]) {

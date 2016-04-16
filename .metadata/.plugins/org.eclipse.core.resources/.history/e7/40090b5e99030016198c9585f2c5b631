@@ -80,6 +80,9 @@ public class HeuristicParameters  {
 	 * @throws FileNotFoundException: If the heuristic.txt file is unable to be found.
 	 * @throws IOException: If the heuristic.txt file is unable to be parsed correctly.
 	 */
+=======
+	
+>>>>>>> e45916a060a9599cc496f6d407eed83129947e52
 	public static HeuristicParameters loadFirstHeuristicParameters() throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader("./heuristic.txt"));
 		String line;
