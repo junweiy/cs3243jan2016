@@ -46,7 +46,6 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
 		while(!s.hasLost()) {
-			//s.makeMove(p.pickMove(s,s.legalMoves()));
 			try {
 				s.makeMove(p.pickMove(s,s.legalMoves()));
 			} catch (ArrayIndexOutOfBoundsException e) {
