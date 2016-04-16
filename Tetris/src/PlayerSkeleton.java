@@ -5,6 +5,76 @@ import java.io.IOException;
 
 public class PlayerSkeleton {
 	
+	public class TempState extends State {
+
+		public boolean lost = false;
+	
+		public TLabel label;
+		
+		//current turn
+		private int turn = 0;
+		private int cleared = 0;
+		
+		//each square in the grid - int means empty - other values mean the turn it was placed
+		private int[][] field = new int[ROWS][COLS];
+		//top row+1 of each column
+		//0 means empty
+		private int[] top = new int[COLS];
+		
+		//number of next piece
+		protected int nextPiece;
+
+		public boolean hasLost() {
+			return lost;
+		}
+		
+		public int getTurnNumber() {
+			return turn;
+		}
+
+		public void setTurnNumber(int turn) {
+			this.turn = turn;
+		}
+
+		public int getRowsCleared() {
+			return cleared;
+		}
+
+		public void setRowsCleared(int cleared) {
+			this.cleared = cleared;
+		}
+
+		public int[][] getField() {
+			return field;
+		}
+
+		public void setField(int[][] field) {
+			for (int i = 0; i < State.ROWS;i++) {
+				for (int j = 0; j < State.COLS; j++) {
+					this.field[i][j] = field[i][j];
+				}
+			}
+		}
+
+		public int[] getTop() {
+			return top;
+		}
+
+		public void setTop(int[] top) {
+			for (int i = 0; i < State.COLS; i++) {
+				this.top[i] = top[i];
+			}
+		}
+		
+		public int getNextPiece() {
+			return nextPiece;
+		}
+
+		public void setNextPiece(int nextPiece) {
+			this.nextPiece = nextPiece;
+		}
+	}
+	
 	public static class HeuristicParameters  {
 		// Four constant parameters
 		protected double a;
@@ -135,9 +205,25 @@ public class PlayerSkeleton {
 	}
 		
 	public State getNextState(State s, int[] legalMove) {
-		State sTemp = s.copy();
+		TempState sTemp = new TempState();
+		sTemp = copy(s);
+		//Comment out the two lines above and uncomment the line below, it will work
+		//State sTemp = s.copy();
 		sTemp.makeMove(legalMove);
 		return sTemp;
+	}
+	
+	// Get a deep copy of a state
+	public TempState copy(State s) {
+		TempState newState = new TempState();
+		newState.lost = s.lost;
+		newState.label = s.label;
+		newState.setTurnNumber(s.getTurnNumber());
+		newState.setRowsCleared(s.getRowsCleared());
+		newState.setField(s.getField());
+		newState.setTop(s.getTop());
+		newState.setNextPiece(s.getNextPiece());
+		return newState;
 	}
 	
 	/**
