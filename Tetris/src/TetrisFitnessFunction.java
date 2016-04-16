@@ -1,16 +1,18 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.IChromosome;
 
 public class TetrisFitnessFunction extends FitnessFunction {
-	
 	private static final long serialVersionUID = 1L;
-	//private static final int NUMBER_OF_BRICKS = 1000;
+	
+	//This is how many times the fitness function is run in order to determine the correct coefficients.
 	private static final int NUMBER_OF_ROUNDS = 5;
 	
+	/**
+	 * This will evaluate an IChromosome a_subject and return the total score determined from the heuristic coefficients that are derived from the IChromosome.
+	 */
 	@Override
 	protected double evaluate(IChromosome a_subject) {
 		int totalScore = 0;
@@ -20,7 +22,6 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		double c = (double) genes[2].getAllele();
 		double d = (double) genes[3].getAllele();
 		HeuristicParameters heu = new HeuristicParameters(a, b, c, d);
-		
 		for (int i = 0; i < NUMBER_OF_ROUNDS; i++) {
 			try {
 				totalScore += getScore(heu);
@@ -31,35 +32,24 @@ public class TetrisFitnessFunction extends FitnessFunction {
 		return (double)totalScore / NUMBER_OF_ROUNDS;
 	}
 
-	
+	/**
+	 * This function will, given a HeuristicParameters variable, determine the score assigned to the State when a move is made. 
+	 * @param hp: the HeuristicParameters variable to be tested. hp will possess the specific coefficients relating to each heuristic function and how they are weighted.
+	 * @return: The score that is determined from the state and heuristicparameters combination.
+	 * @throws FileNotFoundException: If the file is unable to be found from the thread.
+	 * @throws IOException: If the file is unable to be parsed from the thread. 
+	 */
 	public static int getScore(HeuristicParameters hp) throws FileNotFoundException, IOException {
 		State s = new State();
-		int moveCount = 0;
 		PlayerSkeleton p = null;
 		p = new PlayerSkeleton(hp);
-		//while(moveCount < NUMBER_OF_BRICKS && !s.hasLost()) {
 		while(!s.hasLost()) {
-			/*try {
-				s.makeMove(p.pickMove(s,s.legalMoves()));
-			} catch (ArrayIndexOutOfBoundsException e) {
-				//Printing of legalMoves array for debugging use
-		        for (int i = 0; i < s.legalMoves.length; i++) {
-		            for (int j = 0; j < s.legalMoves[i].length; j++) {
-		                System.out.print(s.legalMoves[i][j] + " ");
-		            }
-		            System.out.println();
-		        }
-		        e.printStackTrace();
-			}*/
-			
 			s.makeMove(p.pickMove(s,s.legalMoves()));
-			
 			try {
 				Thread.sleep(0);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			moveCount++;
 		}
 		return s.getRowsCleared();
 	}

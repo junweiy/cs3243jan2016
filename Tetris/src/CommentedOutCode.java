@@ -155,5 +155,28 @@ public int getNumberOfHoles() {
 			}
 			return holes;
 		}*/
+	
+	
+	/*try {
+	s.makeMove(p.pickMove(s,s.legalMoves()));
+} catch (ArrayIndexOutOfBoundsException e) {
+	//Printing of legalMoves array for debugging use
+    for (int i = 0; i < s.legalMoves.length; i++) {
+        for (int j = 0; j < s.legalMoves[i].length; j++) {
+            System.out.print(s.legalMoves[i][j] + " ");
+        }
+        System.out.println();
+    }
+    e.printStackTrace();
+}*/
+	
+	//while(moveCount < NUMBER_OF_BRICKS && !s.hasLost()) {
+	
+	//Without MultiThreading
+			/*for (int i = 0; i < EVOLVETIME; i++) {
+				population.evolve();
+				System.out.println("Best solution so far: " + population.getFittestChromosome().getGenes()[0].getAllele() + " " + population.getFittestChromosome().getGenes()[1].getAllele() + " " + population.getFittestChromosome().getGenes()[2].getAllele() + " " + population.getFittestChromosome().getGenes()[3].getAllele() + ", score: " + population.getFittestChromosome().getFitnessValue());
+				saveToFile(population.getPopulation().determineFittestChromosomes(POPULATION));
+			}*/
 		
 }
